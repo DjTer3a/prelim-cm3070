@@ -1,10 +1,16 @@
 <?php
 
+use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Models\User;
 use App\Models\Context;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+
+// Authentication routes
+Route::post('/register', [AuthController::class, 'register'])->name('api.register');
+Route::post('/login', [AuthController::class, 'login'])->name('api.login');
+Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum')->name('api.logout');
 
 // Simple endpoints for profile viewer (plain JSON)
 Route::get('/viewer/users', function () {
