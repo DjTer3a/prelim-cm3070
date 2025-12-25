@@ -29,3 +29,17 @@ Route::get('/viewer/attributes', function () {
 // When context is omitted, returns the user's default context
 Route::get('/profiles/{username}/{context?}', [ProfileController::class, 'show'])
     ->name('api.profiles.show');
+
+// Authenticated profile editing routes
+Route::middleware('auth:sanctum')->group(function () {
+    Route::put('/profiles/{username}/{context}', [ProfileController::class, 'update'])
+        ->name('api.profiles.update');
+    Route::post('/profiles/{username}/contexts', [ProfileController::class, 'createContext'])
+        ->name('api.profiles.createContext');
+    Route::put('/profiles/{username}/contexts/{context}', [ProfileController::class, 'updateContext'])
+        ->name('api.profiles.updateContext');
+    Route::delete('/profiles/{username}/contexts/{context}', [ProfileController::class, 'deleteContext'])
+        ->name('api.profiles.deleteContext');
+    Route::delete('/profiles/{username}/{context}/{attributeKey}', [ProfileController::class, 'deleteValue'])
+        ->name('api.profiles.deleteValue');
+});
