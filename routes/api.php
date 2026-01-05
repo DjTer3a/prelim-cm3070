@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ProfileController;
+use App\Http\Controllers\Api\TeamController;
 use App\Models\User;
 use App\Models\Context;
 use Illuminate\Http\Request;
@@ -42,4 +43,13 @@ Route::middleware('auth:sanctum')->group(function () {
         ->name('api.profiles.deleteContext');
     Route::delete('/profiles/{username}/{context}/{attributeKey}', [ProfileController::class, 'deleteValue'])
         ->name('api.profiles.deleteValue');
+
+    // Team routes
+    Route::get('/teams', [TeamController::class, 'index'])->name('api.teams.index');
+    Route::post('/teams', [TeamController::class, 'store'])->name('api.teams.store');
+    Route::get('/teams/{slug}', [TeamController::class, 'show'])->name('api.teams.show');
+    Route::put('/teams/{slug}', [TeamController::class, 'update'])->name('api.teams.update');
+    Route::delete('/teams/{slug}', [TeamController::class, 'destroy'])->name('api.teams.destroy');
+    Route::post('/teams/{slug}/members', [TeamController::class, 'addMember'])->name('api.teams.addMember');
+    Route::delete('/teams/{slug}/members/{username}', [TeamController::class, 'removeMember'])->name('api.teams.removeMember');
 });
