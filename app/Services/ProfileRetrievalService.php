@@ -123,9 +123,20 @@ class ProfileRetrievalService
         return match ($value->visibility) {
             'public' => true,
             'protected' => $requester !== null,
-            'private' => $requester?->is($owner) ?? false,
+            'private' => ($requester?->is($owner) ?? false) || $this->isTeamMember($requester, $owner),
             default => false,
         };
+    }
+
+    private function isTeamMember(?User $requester, User $owner): bool
+    {
+        if (!$requester) {
+            return false;
+        }
+
+        return $owner->teams()
+            ->whereHas('members', fn($q) => $q->where('users.id', $requester->id))
+            ->exists();
     }
 
     private function logAccess(User $user, string $contextSlug, ?User $requester, int $statusCode): void
