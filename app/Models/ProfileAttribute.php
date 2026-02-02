@@ -32,6 +32,7 @@ class ProfileAttribute extends Model
     protected $fillable = [
         'key',
         'name',
+        'translations',
         'data_type',
         'schema_type',
         'is_system',
@@ -39,7 +40,17 @@ class ProfileAttribute extends Model
 
     protected $casts = [
         'is_system' => 'boolean',
+        'translations' => 'array',
     ];
+
+    public function translatedName(string $locale = 'en'): string
+    {
+        if ($locale !== 'en' && $this->translations && isset($this->translations[$locale])) {
+            return $this->translations[$locale];
+        }
+
+        return $this->name;
+    }
 
     #[ApiProperty(types: ['https://schema.org/PropertyValue'])]
     public function getSchemaTypeAttribute(): ?string

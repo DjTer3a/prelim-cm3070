@@ -18,6 +18,7 @@ class ContextValueFactory extends Factory
             'profile_attribute_id' => ProfileAttribute::factory(),
             'value' => fake()->word(),
             'visibility' => 'private',
+            'locale' => 'en',
         ];
     }
 

@@ -20,6 +20,7 @@ class ContextValue extends Model
         'profile_attribute_id',
         'value',
         'visibility',
+        'locale',
     ];
 
     protected $casts = [
