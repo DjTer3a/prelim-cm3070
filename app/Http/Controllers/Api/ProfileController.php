@@ -11,6 +11,7 @@ use App\Services\ProfileRetrievalService;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class ProfileController extends Controller
@@ -22,13 +23,14 @@ class ProfileController extends Controller
     /**
      * Get profile by username and context.
      *
-     * GET /api/profiles/{username}/{context?}?format=json|json-ld
+     * GET /api/profiles/{username}/{context?}?format=json|json-ld|rdf|vcard|csv|xml&lang=en
      *
      * @param string $username The user's username
      * @param string|null $context The context slug (e.g., "work", "personal", "gaming"). If null, uses default context.
-     * @param string $format Response format: "json" (default), "json-ld"
+     * @param string $format Response format: "json" (default), "json-ld", "rdf", "vcard", "csv", "xml"
+     * @param string $lang Locale/language code (default: "en")
      */
-    public function show(Request $request, string $username, ?string $context = null): JsonResponse
+    public function show(Request $request, string $username, ?string $context = null): JsonResponse|Response
     {
         $user = User::where('username', $username)->first();
 
@@ -38,9 +40,12 @@ class ProfileController extends Controller
 
         // Get format parameter (default: json)
         $format = $request->query('format', 'json');
-        if (!in_array($format, ['json', 'json-ld'])) {
+        if (!in_array($format, ['json', 'json-ld', 'rdf', 'vcard', 'csv', 'xml'])) {
             $format = 'json';
         }
+
+        // Get locale parameter (default: en)
+        $locale = $request->query('lang', 'en');
 
         // Use Sanctum guard for optional authentication
         $requester = auth('sanctum')->user();
@@ -50,8 +55,15 @@ class ProfileController extends Controller
                 $user,
                 $context,
                 $requester,
-                $format
+                $format,
+                $locale
             );
+
+            // Handle raw string formats (rdf, vcard, csv, xml)
+            if (isset($profile['_raw'])) {
+                return response($profile['_raw'], 200)
+                    ->header('Content-Type', $profile['_content_type']);
+            }
 
             $contentType = $format === 'json-ld' ? 'application/ld+json' : 'application/json';
 
@@ -80,12 +92,15 @@ class ProfileController extends Controller
             'values.*.visibility' => 'required|in:public,protected,private',
         ]);
 
+        $locale = $request->query('lang', 'en');
+
         try {
             $profile = $this->profileService->updateProfile(
                 $user,
                 $context,
                 $request->input('values'),
-                $request->user()
+                $request->user(),
+                $locale
             );
             return response()->json($profile);
         } catch (AuthorizationException $e) {
@@ -235,8 +250,11 @@ class ProfileController extends Controller
             return $this->errorResponse("Attribute '{$attributeKey}' not found", 404);
         }
 
+        $locale = $request->query('lang', 'en');
+
         $deleted = ContextValue::where('context_id', $ctx->id)
             ->where('profile_attribute_id', $attribute->id)
+            ->where('locale', $locale)
             ->delete();
 
         if (!$deleted) {

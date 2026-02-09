@@ -23,7 +23,7 @@ Route::get('/viewer/contexts', function () {
 });
 
 Route::get('/viewer/attributes', function () {
-    return \App\Models\ProfileAttribute::select('id', 'key', 'name', 'data_type', 'schema_type')->get();
+    return \App\Models\ProfileAttribute::select('id', 'key', 'name', 'translations', 'data_type', 'schema_type')->get();
 });
 
 // Profile endpoint: /api/profiles/{username}/{context?}?format=json|json-ld

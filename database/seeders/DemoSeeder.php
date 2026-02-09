@@ -249,6 +249,7 @@ class DemoSeeder extends Seeder
             'display_name' => ProfileAttribute::factory()->create([
                 'key' => 'display_name',
                 'name' => 'Display Name',
+                'translations' => ['ar' => 'الاسم المعروض', 'fr' => 'Nom affiché', 'es' => 'Nombre mostrado', 'de' => 'Anzeigename', 'zh' => '显示名称', 'ja' => '表示名'],
                 'data_type' => 'string',
                 'schema_type' => 'https://schema.org/name',
                 'is_system' => true,
@@ -256,6 +257,7 @@ class DemoSeeder extends Seeder
             'email' => ProfileAttribute::factory()->create([
                 'key' => 'email',
                 'name' => 'Email',
+                'translations' => ['ar' => 'البريد الإلكتروني', 'fr' => 'E-mail', 'es' => 'Correo', 'de' => 'E-Mail', 'zh' => '电子邮件', 'ja' => 'メール'],
                 'data_type' => 'email',
                 'schema_type' => 'https://schema.org/email',
                 'is_system' => true,
@@ -263,6 +265,7 @@ class DemoSeeder extends Seeder
             'bio' => ProfileAttribute::factory()->create([
                 'key' => 'bio',
                 'name' => 'Bio',
+                'translations' => ['ar' => 'السيرة الذاتية', 'fr' => 'Biographie', 'es' => 'Biografía', 'de' => 'Biografie', 'zh' => '简介', 'ja' => '自己紹介'],
                 'data_type' => 'text',
                 'schema_type' => null,
                 'is_system' => true,
@@ -270,6 +273,7 @@ class DemoSeeder extends Seeder
             'website' => ProfileAttribute::factory()->create([
                 'key' => 'website',
                 'name' => 'Website',
+                'translations' => ['ar' => 'الموقع الإلكتروني', 'fr' => 'Site web', 'es' => 'Sitio web', 'de' => 'Webseite', 'zh' => '网站', 'ja' => 'ウェブサイト'],
                 'data_type' => 'url',
                 'schema_type' => 'https://schema.org/url',
                 'is_system' => true,
@@ -277,6 +281,7 @@ class DemoSeeder extends Seeder
             'job_title' => ProfileAttribute::factory()->create([
                 'key' => 'job_title',
                 'name' => 'Job Title',
+                'translations' => ['ar' => 'المسمى الوظيفي', 'fr' => 'Poste', 'es' => 'Cargo', 'de' => 'Berufsbezeichnung', 'zh' => '职位', 'ja' => '役職'],
                 'data_type' => 'string',
                 'schema_type' => 'https://schema.org/jobTitle',
                 'is_system' => true,
@@ -284,6 +289,7 @@ class DemoSeeder extends Seeder
             'company' => ProfileAttribute::factory()->create([
                 'key' => 'company',
                 'name' => 'Company',
+                'translations' => ['ar' => 'الشركة', 'fr' => 'Entreprise', 'es' => 'Empresa', 'de' => 'Unternehmen', 'zh' => '公司', 'ja' => '会社'],
                 'data_type' => 'string',
                 'schema_type' => 'https://schema.org/worksFor',
                 'is_system' => true,
@@ -291,6 +297,7 @@ class DemoSeeder extends Seeder
             'location' => ProfileAttribute::factory()->create([
                 'key' => 'location',
                 'name' => 'Location',
+                'translations' => ['ar' => 'الموقع', 'fr' => 'Lieu', 'es' => 'Ubicación', 'de' => 'Standort', 'zh' => '位置', 'ja' => '所在地'],
                 'data_type' => 'string',
                 'schema_type' => 'https://schema.org/location',
                 'is_system' => true,
@@ -298,6 +305,7 @@ class DemoSeeder extends Seeder
             'phone' => ProfileAttribute::factory()->create([
                 'key' => 'phone',
                 'name' => 'Phone',
+                'translations' => ['ar' => 'الهاتف', 'fr' => 'Téléphone', 'es' => 'Teléfono', 'de' => 'Telefon', 'zh' => '电话', 'ja' => '電話'],
                 'data_type' => 'string',
                 'schema_type' => 'https://schema.org/telephone',
                 'is_system' => true,
