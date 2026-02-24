@@ -13,8 +13,11 @@ return new class extends Migration
     {
         Schema::table('context_values', function (Blueprint $table) {
             $table->string('locale', 10)->default('en')->after('visibility');
-            $table->dropUnique(['context_id', 'profile_attribute_id']);
             $table->unique(['context_id', 'profile_attribute_id', 'locale']);
+        });
+
+        Schema::table('context_values', function (Blueprint $table) {
+            $table->dropUnique(['context_id', 'profile_attribute_id']);
         });
     }
 
@@ -24,8 +27,11 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('context_values', function (Blueprint $table) {
-            $table->dropUnique(['context_id', 'profile_attribute_id', 'locale']);
             $table->unique(['context_id', 'profile_attribute_id']);
+        });
+
+        Schema::table('context_values', function (Blueprint $table) {
+            $table->dropUnique(['context_id', 'profile_attribute_id', 'locale']);
             $table->dropColumn('locale');
         });
     }
