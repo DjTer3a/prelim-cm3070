@@ -143,9 +143,15 @@
                 LOGIN (OPTIONAL)
             </h2>
 
-            <!-- Login Form (shown when not logged in) -->
+            <!-- Quick Login Buttons (shown when not logged in) -->
             <div id="login-form" class="p-4 space-y-4">
                 <div>
+                    <label class="block font-mono font-bold uppercase text-sm mb-2">QUICK LOGIN</label>
+                    <div id="quick-login-buttons" class="flex flex-wrap gap-2">
+                        <!-- Buttons populated dynamically -->
+                    </div>
+                </div>
+                <div class="border-t-2 border-gray-300 pt-4">
                     <label class="block font-mono font-bold uppercase text-sm mb-2" data-i18n="email">EMAIL</label>
                     <input type="email" id="email-input" class="w-full border-[3px] border-black p-3 font-mono text-base focus:outline-none focus:ring-0 rounded-none bg-white" placeholder="user@example.com">
                 </div>
@@ -285,6 +291,13 @@
                 users = Array.isArray(data) ? data : [];
 
                 usernameSelect.innerHTML = '<option value="">-- Select User --</option>';
+
+                // Add "All Users" option
+                const allOption = document.createElement('option');
+                allOption.value = '__all__';
+                allOption.textContent = '-- All Users --';
+                usernameSelect.appendChild(allOption);
+
                 users.forEach(user => {
                     const option = document.createElement('option');
                     option.value = user.username;
@@ -292,8 +305,100 @@
                     option.dataset.userId = user.id;
                     usernameSelect.appendChild(option);
                 });
+
+                createQuickLoginButtons();
             } catch (error) {
                 console.error('Failed to load users:', error);
+            }
+        }
+
+        // Create quick login buttons
+        function createQuickLoginButtons() {
+            const container = document.getElementById('quick-login-buttons');
+            container.innerHTML = '';
+            users.forEach(user => {
+                const btn = document.createElement('button');
+                btn.className = 'bg-white text-black px-3 py-2 font-mono font-bold text-xs uppercase border-[3px] border-black hover:bg-black hover:text-white cursor-pointer';
+                btn.textContent = user.username;
+
+                if (user.username === 'admin') {
+                    // Admin: session login and redirect to Filament panel
+                    btn.addEventListener('click', () => quickLoginAdmin(user.email));
+                } else {
+                    btn.addEventListener('click', () => quickLogin(user.email));
+                }
+
+                container.appendChild(btn);
+            });
+        }
+
+        // Quick login admin via session (for Filament panel)
+        function quickLoginAdmin(email) {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '/quick-login';
+
+            const csrf = document.createElement('input');
+            csrf.type = 'hidden';
+            csrf.name = '_token';
+            csrf.value = document.querySelector('meta[name="csrf-token"]').content;
+
+            const emailField = document.createElement('input');
+            emailField.type = 'hidden';
+            emailField.name = 'email';
+            emailField.value = email;
+
+            const passField = document.createElement('input');
+            passField.type = 'hidden';
+            passField.name = 'password';
+            passField.value = 'password';
+
+            const redirectField = document.createElement('input');
+            redirectField.type = 'hidden';
+            redirectField.name = 'redirect';
+            redirectField.value = '/admin';
+
+            form.appendChild(csrf);
+            form.appendChild(emailField);
+            form.appendChild(passField);
+            form.appendChild(redirectField);
+            document.body.appendChild(form);
+            form.submit();
+        }
+
+        // Quick login as a demo user
+        async function quickLogin(email) {
+            hideLoginError();
+            try {
+                const response = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                    },
+                    body: JSON.stringify({ email, password: 'password' }),
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    showLoginError(error.message || 'Quick login failed');
+                    return;
+                }
+
+                const data = await response.json();
+                authToken = data.token;
+                currentUser = data.user;
+                localStorage.setItem('auth_token', authToken);
+                localStorage.setItem('current_user', JSON.stringify(currentUser));
+                updateAuthUI();
+
+                // Refresh profile if one is displayed
+                if (!profileSection.classList.contains('hidden')) {
+                    viewProfile();
+                }
+            } catch (error) {
+                showLoginError('Quick login failed');
+                console.error(error);
             }
         }
 
@@ -329,10 +434,16 @@
             const context = contextSelect.value;
             const locale = document.getElementById('locale-select').value;
 
-            if (!username || !context) return;
-
             hideError();
             profileSection.classList.add('hidden');
+
+            // Handle "All Users" view
+            if (username === '__all__') {
+                await viewAllProfiles(locale);
+                return;
+            }
+
+            if (!username || !context) return;
 
             try {
                 // Fetch JSON and JSON-LD first (needed for field display)
@@ -370,6 +481,80 @@
                 showError('Failed to fetch profile');
                 console.error(error);
             }
+        }
+
+        // View all users' default profiles
+        async function viewAllProfiles(locale) {
+            try {
+                const results = await Promise.all(
+                    users.map(async (user) => {
+                        const resp = await api(`/api/profiles/${user.username}?format=json&lang=${locale}`);
+                        if (resp.ok) {
+                            return { user, profile: await resp.json() };
+                        }
+                        return null;
+                    })
+                );
+
+                const profiles = results.filter(Boolean);
+                if (profiles.length === 0) {
+                    showError('No profiles found');
+                    return;
+                }
+
+                displayAllProfiles(profiles, locale);
+            } catch (error) {
+                showError('Failed to fetch profiles');
+                console.error(error);
+            }
+        }
+
+        // Display all users' profiles stacked
+        function displayAllProfiles(profiles, locale) {
+            profileData.innerHTML = '';
+            simpleData.innerHTML = '';
+
+            const skipFields = ['@context', '@type', '@id', 'context', '_labels'];
+
+            profiles.forEach(({ user, profile }) => {
+                // User header
+                const header = document.createElement('div');
+                header.className = 'p-3 font-mono bg-gray-200 border-b-2 border-black font-bold uppercase';
+                header.textContent = `${user.name} (@${user.username})`;
+                profileData.appendChild(header);
+                simpleData.appendChild(header.cloneNode(true));
+
+                const labels = profile._labels || {};
+
+                for (const [key, fieldData] of Object.entries(profile)) {
+                    if (skipFields.includes(key)) continue;
+
+                    const visibility = fieldData?.visibility || 'public';
+                    const value = fieldData?.value ?? fieldData;
+                    const translatedKey = labels[key] || tKey(key, locale);
+                    const displayValue = typeof value === 'object' ? JSON.stringify(value) : value;
+
+                    const row = document.createElement('div');
+                    row.className = `p-3 font-mono ${getVisibilityClass(visibility)}`;
+                    row.innerHTML = `<span class="font-bold">${translatedKey}:</span> ${displayValue || '<em class="opacity-50">' + t('not_set', locale) + '</em>'}`;
+                    profileData.appendChild(row);
+                    simpleData.appendChild(row.cloneNode(true));
+                }
+            });
+
+            // Raw JSON for all profiles
+            const allJson = profiles.map(({ user, profile }) => ({ username: user.username, ...profile }));
+            rawJson.textContent = JSON.stringify(allJson, null, 2);
+            simpleJson.textContent = JSON.stringify(allJson, null, 2);
+
+            // Clear other format views
+            document.getElementById('rdf-output').textContent = 'Select a single user to view RDF format';
+            document.getElementById('vcard-output').textContent = 'Select a single user to view vCard format';
+            document.getElementById('csv-output').textContent = 'Select a single user to view CSV format';
+            document.getElementById('xml-output').textContent = 'Select a single user to view XML format';
+
+            visibilityNotice.classList.add('hidden');
+            profileSection.classList.remove('hidden');
         }
 
         // Store profiles for all formats
@@ -604,6 +789,7 @@
 
         // Event listeners
         usernameSelect.addEventListener('change', async (e) => {
+            const value = e.target.value;
             const selectedOption = e.target.selectedOptions[0];
             const userId = selectedOption?.dataset?.userId;
 
@@ -613,7 +799,12 @@
             profileSection.classList.add('hidden');
             hideError();
 
-            if (userId) {
+            if (value === '__all__') {
+                // "All Users" selected - skip context, enable view
+                contextSelect.innerHTML = '<option value="__all__">-- All Contexts --</option>';
+                contextSelect.disabled = true;
+                viewBtn.disabled = false;
+            } else if (userId) {
                 await loadContexts(userId);
             }
         });

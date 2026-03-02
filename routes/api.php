@@ -15,7 +15,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanc
 
 // Simple endpoints for profile viewer (plain JSON)
 Route::get('/viewer/users', function () {
-    return User::select('id', 'name', 'username')->get();
+    return User::select('id', 'name', 'username', 'email')->get();
 });
 
 Route::get('/viewer/contexts', function () {
