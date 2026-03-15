@@ -10,10 +10,10 @@
 <body class="bg-white min-h-screen py-10 px-4">
     <div class="max-w-2xl mx-auto border-4 border-black">
         <nav class="bg-gray-100 border-b-4 border-black p-3 flex gap-4 font-mono text-sm uppercase">
-            <a href="/" class="font-bold hover:underline" data-i18n="viewer">Viewer</a>
-            <a href="/editor" class="font-bold hover:underline" data-i18n="editor">Editor</a>
-            <a href="/teams" class="font-bold hover:underline" data-i18n="teams">Teams</a>
-            <a href="/register" class="font-bold hover:underline" data-i18n="register">Register</a>
+            <a href="/" class="font-bold hover:underline" data-i18n="viewer" data-tooltip="tip_nav_viewer" data-tooltip-pos="bottom">Viewer</a>
+            <a href="/editor" class="font-bold hover:underline" data-i18n="editor" data-tooltip="tip_nav_editor" data-tooltip-pos="bottom">Editor</a>
+            <a href="/teams" class="font-bold hover:underline" data-i18n="teams" data-tooltip="tip_nav_teams" data-tooltip-pos="bottom">Teams</a>
+            <a href="/register" class="font-bold hover:underline" data-i18n="register" data-tooltip="tip_nav_register" data-tooltip-pos="bottom">Register</a>
         </nav>
         <!-- Header -->
         <h1 class="bg-black text-white p-4 text-xl font-bold uppercase font-mono" data-i18n="identity_viewer">
@@ -24,19 +24,19 @@
         <div class="p-4 space-y-4 border-b-4 border-black">
             <div>
                 <label class="block font-mono font-bold uppercase text-sm mb-2" data-i18n="username">USERNAME</label>
-                <select id="username-select" class="w-full border-[3px] border-black p-3 font-mono text-base focus:outline-none rounded-none bg-white appearance-none cursor-pointer">
+                <select id="username-select" class="w-full border-[3px] border-black p-3 font-mono text-base focus:outline-none rounded-none bg-white appearance-none cursor-pointer" data-tooltip="tip_username_select">
                     <option value="">-- Select User --</option>
                 </select>
             </div>
             <div>
                 <label class="block font-mono font-bold uppercase text-sm mb-2" data-i18n="context">CONTEXT</label>
-                <select id="context-select" class="w-full border-[3px] border-black p-3 font-mono text-base focus:outline-none rounded-none bg-white appearance-none cursor-pointer" disabled>
+                <select id="context-select" class="w-full border-[3px] border-black p-3 font-mono text-base focus:outline-none rounded-none bg-white appearance-none cursor-pointer" disabled data-tooltip="tip_context_select">
                     <option value="">-- Select Context --</option>
                 </select>
             </div>
             <div>
                 <label class="block font-mono font-bold uppercase text-sm mb-2" data-i18n="language">LANGUAGE</label>
-                <select id="locale-select" class="w-full border-[3px] border-black p-3 font-mono text-base focus:outline-none rounded-none bg-white appearance-none cursor-pointer">
+                <select id="locale-select" class="w-full border-[3px] border-black p-3 font-mono text-base focus:outline-none rounded-none bg-white appearance-none cursor-pointer" data-tooltip="tip_locale_select">
                     <option value="en">English (en)</option>
                     <option value="ar">Arabic (ar)</option>
                     <option value="fr">French (fr)</option>
@@ -46,7 +46,7 @@
                     <option value="ja">Japanese (ja)</option>
                 </select>
             </div>
-            <button id="view-btn" class="w-full bg-black text-white p-3 font-mono font-bold uppercase border-[3px] border-black hover:bg-white hover:text-black cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed" disabled data-i18n="view_profile">
+            <button id="view-btn" class="w-full bg-black text-white p-3 font-mono font-bold uppercase border-[3px] border-black hover:bg-white hover:text-black cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed" disabled data-i18n="view_profile" data-tooltip="tip_view_profile">
                 VIEW PROFILE
             </button>
         </div>
@@ -56,22 +56,22 @@
             <div class="bg-black text-white p-3 flex items-center justify-between">
                 <h2 class="text-lg font-bold uppercase font-mono" data-i18n="profile_data">PROFILE DATA</h2>
                 <div class="flex gap-1 flex-wrap">
-                    <button data-format="json-ld" class="format-btn px-2 py-1 font-mono text-xs uppercase border-2 border-white bg-white text-black cursor-pointer">
+                    <button data-format="json-ld" class="format-btn px-2 py-1 font-mono text-xs uppercase border-2 border-white bg-white text-black cursor-pointer" data-tooltip="tip_format_jsonld" data-tooltip-pos="bottom">
                         JSON-LD
                     </button>
-                    <button data-format="json" class="format-btn px-2 py-1 font-mono text-xs uppercase border-2 border-white bg-transparent text-white cursor-pointer">
+                    <button data-format="json" class="format-btn px-2 py-1 font-mono text-xs uppercase border-2 border-white bg-transparent text-white cursor-pointer" data-tooltip="tip_format_json" data-tooltip-pos="bottom">
                         JSON
                     </button>
-                    <button data-format="rdf" class="format-btn px-2 py-1 font-mono text-xs uppercase border-2 border-white bg-transparent text-white cursor-pointer">
+                    <button data-format="rdf" class="format-btn px-2 py-1 font-mono text-xs uppercase border-2 border-white bg-transparent text-white cursor-pointer" data-tooltip="tip_format_rdf" data-tooltip-pos="bottom">
                         RDF
                     </button>
-                    <button data-format="vcard" class="format-btn px-2 py-1 font-mono text-xs uppercase border-2 border-white bg-transparent text-white cursor-pointer">
+                    <button data-format="vcard" class="format-btn px-2 py-1 font-mono text-xs uppercase border-2 border-white bg-transparent text-white cursor-pointer" data-tooltip="tip_format_vcard" data-tooltip-pos="bottom">
                         vCard
                     </button>
-                    <button data-format="csv" class="format-btn px-2 py-1 font-mono text-xs uppercase border-2 border-white bg-transparent text-white cursor-pointer">
+                    <button data-format="csv" class="format-btn px-2 py-1 font-mono text-xs uppercase border-2 border-white bg-transparent text-white cursor-pointer" data-tooltip="tip_format_csv" data-tooltip-pos="bottom">
                         CSV
                     </button>
-                    <button data-format="xml" class="format-btn px-2 py-1 font-mono text-xs uppercase border-2 border-white bg-transparent text-white cursor-pointer">
+                    <button data-format="xml" class="format-btn px-2 py-1 font-mono text-xs uppercase border-2 border-white bg-transparent text-white cursor-pointer" data-tooltip="tip_format_xml" data-tooltip-pos="bottom">
                         XML
                     </button>
                 </div>
@@ -153,16 +153,16 @@
                 </div>
                 <div class="border-t-2 border-gray-300 pt-4">
                     <label class="block font-mono font-bold uppercase text-sm mb-2" data-i18n="email">EMAIL</label>
-                    <input type="email" id="email-input" class="w-full border-[3px] border-black p-3 font-mono text-base focus:outline-none focus:ring-0 rounded-none bg-white" placeholder="user@example.com">
+                    <input type="email" id="email-input" class="w-full border-[3px] border-black p-3 font-mono text-base focus:outline-none focus:ring-0 rounded-none bg-white" placeholder="user@example.com" data-tooltip="tip_email_input">
                 </div>
                 <div>
                     <label class="block font-mono font-bold uppercase text-sm mb-2" data-i18n="password">PASSWORD</label>
-                    <input type="password" id="password-input" class="w-full border-[3px] border-black p-3 font-mono text-base focus:outline-none focus:ring-0 rounded-none bg-white" placeholder="********">
+                    <input type="password" id="password-input" class="w-full border-[3px] border-black p-3 font-mono text-base focus:outline-none focus:ring-0 rounded-none bg-white" placeholder="********" data-tooltip="tip_password_input">
                 </div>
                 <div id="login-error" class="hidden border-[3px] border-black p-3 font-mono text-center bg-white">
                     <!-- Login error will be shown here -->
                 </div>
-                <button id="login-btn" class="w-full bg-black text-white p-3 font-mono font-bold uppercase border-[3px] border-black hover:bg-white hover:text-black cursor-pointer" data-i18n="login">
+                <button id="login-btn" class="w-full bg-black text-white p-3 font-mono font-bold uppercase border-[3px] border-black hover:bg-white hover:text-black cursor-pointer" data-i18n="login" data-tooltip="tip_login_btn">
                     LOGIN
                 </button>
             </div>
@@ -174,10 +174,10 @@
                         Logged in as: <strong id="logged-in-user"></strong>
                     </span>
                     <div class="flex gap-2">
-                        <button id="copy-token-btn" class="bg-white text-black p-2 px-4 font-mono font-bold uppercase border-[3px] border-black hover:bg-black hover:text-white cursor-pointer text-xs" data-i18n="copy_token">
+                        <button id="copy-token-btn" class="bg-white text-black p-2 px-4 font-mono font-bold uppercase border-[3px] border-black hover:bg-black hover:text-white cursor-pointer text-xs" data-i18n="copy_token" data-tooltip="tip_copy_token">
                             COPY TOKEN
                         </button>
-                        <button id="logout-btn" class="bg-white text-black p-2 px-4 font-mono font-bold uppercase border-[3px] border-black hover:bg-black hover:text-white cursor-pointer text-xs" data-i18n="logout">
+                        <button id="logout-btn" class="bg-white text-black p-2 px-4 font-mono font-bold uppercase border-[3px] border-black hover:bg-black hover:text-white cursor-pointer text-xs" data-i18n="logout" data-tooltip="tip_logout">
                             LOGOUT
                         </button>
                     </div>
@@ -307,6 +307,7 @@
                 });
 
                 createQuickLoginButtons();
+                translateTooltips();
             } catch (error) {
                 console.error('Failed to load users:', error);
             }
@@ -320,6 +321,7 @@
                 const btn = document.createElement('button');
                 btn.className = 'bg-white text-black px-3 py-2 font-mono font-bold text-xs uppercase border-[3px] border-black hover:bg-black hover:text-white cursor-pointer';
                 btn.textContent = user.username;
+                btn.setAttribute('data-tooltip', 'tip_quick_login');
 
                 if (user.username === 'admin') {
                     // Admin: session login and redirect to Filament panel
@@ -861,6 +863,7 @@
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 el.textContent = t(el.dataset.i18n, locale);
             });
+            translateTooltips(locale);
         }
 
         // Locale change handler

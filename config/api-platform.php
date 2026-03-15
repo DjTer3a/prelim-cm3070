@@ -14,11 +14,10 @@ declare(strict_types=1);
 use ApiPlatform\Metadata\UrlGeneratorInterface;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
-use Symfony\Component\Serializer\NameConverter\SnakeCaseToCamelCaseNameConverter;
 
 return [
-    'title' => 'API Platform',
-    'description' => 'My awesome API',
+    'title' => 'Identity Profile Manager API',
+    'description' => 'A contextual identity management system. Users have multiple identity contexts (e.g. work, personal, gaming) with per-attribute visibility controls (public, protected, private). Supports JSON, JSON-LD, RDF, vCard, CSV, and XML output formats. Custom endpoints: POST /api/login, POST /api/register, POST /api/logout for auth; GET/PUT /api/profiles/{username}/{context} for profile data; GET/POST/PUT/DELETE /api/teams/{slug} for team management.',
     'version' => '1.0.0',
     'show_webby' => true,
 
@@ -34,6 +33,7 @@ return [
 
     'formats' => [
         'jsonld' => ['application/ld+json'],
+        'json' => ['application/json'],
         // 'jsonapi' => ['application/vnd.api+json'],
         // 'csv' => ['text/csv'],
     ],
@@ -88,7 +88,7 @@ return [
     ],
 
     // set to null if you want to keep snake_case
-    'name_converter' => SnakeCaseToCamelCaseNameConverter::class,
+    'name_converter' => null,
 
     'exception_to_status' => [
         AuthenticationException::class => 401,
@@ -97,37 +97,12 @@ return [
 
     'swagger_ui' => [
         'enabled' => true,
-        // 'apiKeys' => [
-        //     'api' => [
-        //         'name' => 'Authorization',
-        //         'type' => 'header',
-        //     ],
-        // ],
-        // 'oauth' => [
-        //     'enabled' => true,
-        //     'type' => 'oauth2',
-        //     'flow' => 'authorizationCode',
-        //     'tokenUrl' => '',
-        //     'authorizationUrl' =>'',
-        //     'refreshUrl' => '',
-        //     'scopes' => ['scope1' => 'Description scope 1'],
-        //     'pkce' => true,
-        // ],
-        // 'license' => [
-        //     'name' => 'Apache 2.0',
-        //     'url' => 'https://www.apache.org/licenses/LICENSE-2.0.html',
-        // ],
-        // 'contact' => [
-        //     'name' => 'API Support',
-        //     'url' => 'https://www.example.com/support',
-        //     'email' => 'support@example.com',
-        // ],
-        // 'http_auth' => [
-        //     'Personal Access Token' => [
-        //         'scheme' => 'bearer',
-        //         'bearerFormat' => 'JWT',
-        //     ],
-        // ],
+        'http_auth' => [
+            'Bearer Token' => [
+                'scheme' => 'bearer',
+                'bearerFormat' => 'Sanctum token from POST /api/login',
+            ],
+        ],
     ],
 
     // 'openapi' => [

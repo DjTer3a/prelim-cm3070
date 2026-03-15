@@ -6,9 +6,6 @@ namespace App\Models;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
-use ApiPlatform\Metadata\Post;
-use ApiPlatform\Metadata\Put;
-use ApiPlatform\Metadata\Delete;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -20,13 +17,15 @@ use Laravel\Sanctum\HasApiTokens;
 
 #[ApiResource(
     shortName: 'User',
-    description: 'A user account that can have multiple identity contexts. For profile data with visibility controls, use GET /api/profiles/{username}/{context}. User management is done via the admin panel.',
+    description: 'A user account with multiple identity contexts. To register: POST /api/register. To authenticate: POST /api/login (returns Bearer token). For profile data: GET /api/profiles/{username}/{context}?format=json|json-ld|rdf|vcard|csv|xml&lang=en. To update profiles: PUT /api/profiles/{username}/{context} (auth required).',
     operations: [
         new GetCollection(
-            description: 'List all users. Returns basic info (id, name, username). Use usernames with /api/profiles/{username}/{context} to access profile data.'
+            description: 'List all users (public). Use the username field with /api/profiles/{username}/{context} to retrieve profile data.',
+            security: 'is_granted("PUBLIC_ACCESS")',
         ),
         new Get(
-            description: 'Get a user by ID. For context-specific profile data with visibility filtering, use /api/profiles/{username}/{context} instead.'
+            description: 'Get a single user by ID (public). For context-specific profile data with visibility controls, use GET /api/profiles/{username}/{context} instead.',
+            security: 'is_granted("PUBLIC_ACCESS")',
         ),
     ],
 )]

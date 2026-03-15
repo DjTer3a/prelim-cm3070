@@ -10,10 +10,10 @@
 <body class="bg-white min-h-screen py-10 px-4">
     <div class="max-w-2xl mx-auto border-4 border-black">
         <nav class="bg-gray-100 border-b-4 border-black p-3 flex gap-4 font-mono text-sm uppercase">
-            <a href="/" class="font-bold hover:underline">Viewer</a>
-            <a href="/editor" class="font-bold hover:underline">Editor</a>
-            <a href="/teams" class="font-bold hover:underline">Teams</a>
-            <a href="/register" class="font-bold hover:underline">Register</a>
+            <a href="/" class="font-bold hover:underline" data-tooltip="tip_nav_viewer" data-tooltip-pos="bottom">Viewer</a>
+            <a href="/editor" class="font-bold hover:underline" data-tooltip="tip_nav_editor" data-tooltip-pos="bottom">Editor</a>
+            <a href="/teams" class="font-bold hover:underline" data-tooltip="tip_nav_teams" data-tooltip-pos="bottom">Teams</a>
+            <a href="/register" class="font-bold hover:underline" data-tooltip="tip_nav_register" data-tooltip-pos="bottom">Register</a>
         </nav>
 
         <!-- Header -->
@@ -43,7 +43,7 @@
                 <span class="font-mono">
                     Logged in as: <strong id="logged-in-user"></strong>
                 </span>
-                <button id="logout-btn" class="bg-white text-black p-2 px-4 font-mono font-bold uppercase border-[3px] border-black hover:bg-black hover:text-white cursor-pointer text-xs">
+                <button id="logout-btn" class="bg-white text-black p-2 px-4 font-mono font-bold uppercase border-[3px] border-black hover:bg-black hover:text-white cursor-pointer text-xs" data-tooltip="tip_logout">
                     LOGOUT
                 </button>
             </div>
@@ -69,18 +69,18 @@
                 <div class="p-4 space-y-4">
                     <div>
                         <label class="block font-mono font-bold uppercase text-sm mb-2">TEAM NAME</label>
-                        <input type="text" id="new-team-name" class="w-full border-[3px] border-black p-3 font-mono text-base focus:outline-none focus:ring-0 rounded-none bg-white" placeholder="My Team">
+                        <input type="text" id="new-team-name" class="w-full border-[3px] border-black p-3 font-mono text-base focus:outline-none focus:ring-0 rounded-none bg-white" placeholder="My Team" data-tooltip="tip_team_name">
                     </div>
                     <div>
                         <label class="block font-mono font-bold uppercase text-sm mb-2">TEAM SLUG</label>
-                        <input type="text" id="new-team-slug" class="w-full border-[3px] border-black p-3 font-mono text-base focus:outline-none focus:ring-0 rounded-none bg-white" placeholder="my-team">
+                        <input type="text" id="new-team-slug" class="w-full border-[3px] border-black p-3 font-mono text-base focus:outline-none focus:ring-0 rounded-none bg-white" placeholder="my-team" data-tooltip="tip_team_slug">
                     </div>
                     <div>
                         <label class="block font-mono font-bold uppercase text-sm mb-2">DESCRIPTION</label>
-                        <input type="text" id="new-team-description" class="w-full border-[3px] border-black p-3 font-mono text-base focus:outline-none focus:ring-0 rounded-none bg-white" placeholder="A brief description of the team">
+                        <input type="text" id="new-team-description" class="w-full border-[3px] border-black p-3 font-mono text-base focus:outline-none focus:ring-0 rounded-none bg-white" placeholder="A brief description of the team" data-tooltip="tip_team_description">
                     </div>
                     <div id="create-team-error" class="hidden border-[3px] border-black p-3 font-mono text-center bg-white text-sm"></div>
-                    <button id="create-team-btn" class="w-full bg-black text-white p-3 font-mono font-bold uppercase border-[3px] border-black hover:bg-white hover:text-black cursor-pointer">
+                    <button id="create-team-btn" class="w-full bg-black text-white p-3 font-mono font-bold uppercase border-[3px] border-black hover:bg-white hover:text-black cursor-pointer" data-tooltip="tip_create_team">
                         CREATE TEAM
                     </button>
                 </div>
@@ -95,6 +95,7 @@
         </div>
     </div>
 
+    @include('partials.i18n')
     @verbatim
     <script>
         // State
@@ -152,6 +153,7 @@
 
             await loadAllUsers();
             await loadTeams();
+            translateTooltips();
         }
 
         // Load all users for the select box
@@ -237,11 +239,11 @@
 
                     html += `
                         <div class="flex gap-2">
-                            <select id="add-member-${team.id}" class="flex-1 border-[3px] border-black p-2 font-mono text-sm focus:outline-none focus:ring-0 rounded-none bg-white">
+                            <select id="add-member-${team.id}" class="flex-1 border-[3px] border-black p-2 font-mono text-sm focus:outline-none focus:ring-0 rounded-none bg-white" data-tooltip="tip_add_member_select">
                                 <option value="">-- Select a user --</option>
                                 ${userOptions}
                             </select>
-                            <button onclick="addMember(${team.id})" class="bg-black text-white p-2 px-4 font-mono font-bold uppercase border-[3px] border-black hover:bg-white hover:text-black cursor-pointer text-xs">
+                            <button onclick="addMember(${team.id})" class="bg-black text-white p-2 px-4 font-mono font-bold uppercase border-[3px] border-black hover:bg-white hover:text-black cursor-pointer text-xs" data-tooltip="tip_add_member_btn">
                                 ADD
                             </button>
                         </div>
@@ -256,6 +258,7 @@
                 // Load members for this team
                 loadMembers(team);
             });
+            translateTooltips();
         }
 
         // Load members for a team
@@ -300,7 +303,7 @@
                     // Only show remove button for owners and non-owner members
                     if (isOwner && role !== 'owner') {
                         memberHtml += `
-                            <button onclick="removeMember(${team.id}, '${escapeHtml(team.slug)}', '${escapeHtml(username)}')" class="bg-white text-black px-2 py-1 font-mono font-bold uppercase border-[2px] border-black hover:bg-black hover:text-white cursor-pointer text-xs">
+                            <button onclick="removeMember(${team.id}, '${escapeHtml(team.slug)}', '${escapeHtml(username)}')" class="bg-white text-black px-2 py-1 font-mono font-bold uppercase border-[2px] border-black hover:bg-black hover:text-white cursor-pointer text-xs" data-tooltip="tip_remove_member">
                                 REMOVE
                             </button>
                         `;
@@ -309,6 +312,7 @@
                     memberEl.innerHTML = memberHtml;
                     membersEl.appendChild(memberEl);
                 });
+                translateTooltips();
             } catch (error) {
                 membersEl.innerHTML = '<div class="font-mono text-sm">Failed to load members</div>';
                 console.error('Failed to load members:', error);

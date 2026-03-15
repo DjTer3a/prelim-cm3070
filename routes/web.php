@@ -18,7 +18,7 @@ Route::post('/quick-login', function () {
         return redirect(request('redirect', '/'));
     }
 
-    return back();
+    return back()->withErrors(['email' => 'Login failed. Please check credentials.']);
 });
 
 Route::get('/register', fn() => view('register'));

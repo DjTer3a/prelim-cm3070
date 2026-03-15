@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use ApiPlatform\OpenApi\Factory\OpenApiFactoryInterface;
+use App\OpenApi\OpenApiFactory;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -11,7 +13,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->extend(OpenApiFactoryInterface::class, function (OpenApiFactoryInterface $factory) {
+            return new OpenApiFactory($factory);
+        });
     }
 
     /**

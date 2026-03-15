@@ -19,7 +19,7 @@ Route::get('/viewer/users', function () {
 });
 
 Route::get('/viewer/contexts', function () {
-    return Context::select('id', 'user_id', 'name', 'slug')->where('is_active', true)->get();
+    return Context::select('id', 'user_id', 'name', 'slug')->get();
 });
 
 Route::get('/viewer/attributes', function () {

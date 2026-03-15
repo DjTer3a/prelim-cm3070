@@ -10,10 +10,10 @@
 <body class="bg-white min-h-screen py-10 px-4">
     <div class="max-w-2xl mx-auto border-4 border-black">
         <nav class="bg-gray-100 border-b-4 border-black p-3 flex gap-4 font-mono text-sm uppercase">
-            <a href="/" class="font-bold hover:underline" data-i18n="viewer">Viewer</a>
-            <a href="/editor" class="font-bold hover:underline" data-i18n="editor">Editor</a>
-            <a href="/teams" class="font-bold hover:underline" data-i18n="teams">Teams</a>
-            <a href="/register" class="font-bold hover:underline" data-i18n="register">Register</a>
+            <a href="/" class="font-bold hover:underline" data-i18n="viewer" data-tooltip="tip_nav_viewer" data-tooltip-pos="bottom">Viewer</a>
+            <a href="/editor" class="font-bold hover:underline" data-i18n="editor" data-tooltip="tip_nav_editor" data-tooltip-pos="bottom">Editor</a>
+            <a href="/teams" class="font-bold hover:underline" data-i18n="teams" data-tooltip="tip_nav_teams" data-tooltip-pos="bottom">Teams</a>
+            <a href="/register" class="font-bold hover:underline" data-i18n="register" data-tooltip="tip_nav_register" data-tooltip-pos="bottom">Register</a>
         </nav>
 
         <!-- Header -->
@@ -43,7 +43,7 @@
                 <span class="font-mono">
                     Logged in as: <strong id="logged-in-user"></strong>
                 </span>
-                <button id="logout-btn" class="bg-white text-black p-2 px-4 font-mono font-bold uppercase border-[3px] border-black hover:bg-black hover:text-white cursor-pointer text-xs" data-i18n="logout">
+                <button id="logout-btn" class="bg-white text-black p-2 px-4 font-mono font-bold uppercase border-[3px] border-black hover:bg-black hover:text-white cursor-pointer text-xs" data-i18n="logout" data-tooltip="tip_logout">
                     LOGOUT
                 </button>
             </div>
@@ -52,13 +52,13 @@
             <div class="p-4 border-b-4 border-black space-y-4">
                 <div>
                     <label class="block font-mono font-bold uppercase text-sm mb-2" data-i18n="select_context_label">SELECT CONTEXT</label>
-                    <select id="context-select" class="w-full border-[3px] border-black p-3 font-mono text-base focus:outline-none rounded-none bg-white appearance-none cursor-pointer">
+                    <select id="context-select" class="w-full border-[3px] border-black p-3 font-mono text-base focus:outline-none rounded-none bg-white appearance-none cursor-pointer" data-tooltip="tip_editor_context_select">
                         <option value="">-- Select Context --</option>
                     </select>
                 </div>
                 <div>
                     <label class="block font-mono font-bold uppercase text-sm mb-2" data-i18n="language">LANGUAGE</label>
-                    <select id="locale-select" class="w-full border-[3px] border-black p-3 font-mono text-base focus:outline-none rounded-none bg-white appearance-none cursor-pointer">
+                    <select id="locale-select" class="w-full border-[3px] border-black p-3 font-mono text-base focus:outline-none rounded-none bg-white appearance-none cursor-pointer" data-tooltip="tip_locale_select">
                         <option value="en">English (en)</option>
                         <option value="ar">Arabic (ar)</option>
                         <option value="fr">French (fr)</option>
@@ -68,7 +68,7 @@
                         <option value="ja">Japanese (ja)</option>
                     </select>
                 </div>
-                <button id="load-context-btn" class="w-full bg-black text-white p-3 font-mono font-bold uppercase border-[3px] border-black hover:bg-white hover:text-black cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed" disabled data-i18n="load_context">
+                <button id="load-context-btn" class="w-full bg-black text-white p-3 font-mono font-bold uppercase border-[3px] border-black hover:bg-white hover:text-black cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed" disabled data-i18n="load_context" data-tooltip="tip_load_context">
                     LOAD CONTEXT
                 </button>
             </div>
@@ -88,10 +88,10 @@
                 <div class="p-4 border-t-4 border-black space-y-3">
                     <label class="block font-mono font-bold uppercase text-sm" data-i18n="add_attribute">ADD ATTRIBUTE</label>
                     <div class="flex gap-2">
-                        <select id="add-attribute-select" class="flex-1 border-[3px] border-black p-2 font-mono text-sm focus:outline-none focus:ring-0 rounded-none bg-white">
+                        <select id="add-attribute-select" class="flex-1 border-[3px] border-black p-2 font-mono text-sm focus:outline-none focus:ring-0 rounded-none bg-white" data-tooltip="tip_add_attr_select">
                             <option value="">-- Select --</option>
                         </select>
-                        <button id="add-attribute-btn" class="bg-black text-white p-2 px-4 font-mono font-bold uppercase border-[3px] border-black hover:bg-white hover:text-black cursor-pointer text-xs" data-i18n="add">
+                        <button id="add-attribute-btn" class="bg-black text-white p-2 px-4 font-mono font-bold uppercase border-[3px] border-black hover:bg-white hover:text-black cursor-pointer text-xs" data-i18n="add" data-tooltip="tip_add_attr_btn">
                             ADD
                         </button>
                     </div>
@@ -100,14 +100,14 @@
                 <!-- Save / Status -->
                 <div class="p-4 border-t-4 border-black space-y-3">
                     <div id="save-status" class="hidden border-[3px] border-black p-3 font-mono text-center bg-white text-sm"></div>
-                    <button id="save-btn" class="w-full bg-black text-white p-3 font-mono font-bold uppercase border-[3px] border-black hover:bg-white hover:text-black cursor-pointer" data-i18n="save_changes">
+                    <button id="save-btn" class="w-full bg-black text-white p-3 font-mono font-bold uppercase border-[3px] border-black hover:bg-white hover:text-black cursor-pointer" data-i18n="save_changes" data-tooltip="tip_save_changes">
                         SAVE CHANGES
                     </button>
                 </div>
 
                 <!-- Deactivate Context -->
                 <div class="p-4 border-t-4 border-black">
-                    <button id="deactivate-btn" class="w-full bg-white text-black p-3 font-mono font-bold uppercase border-[3px] border-black hover:bg-black hover:text-white cursor-pointer" data-i18n="deactivate_context">
+                    <button id="deactivate-btn" class="w-full bg-white text-black p-3 font-mono font-bold uppercase border-[3px] border-black hover:bg-black hover:text-white cursor-pointer" data-i18n="deactivate_context" data-tooltip="tip_deactivate_context">
                         DEACTIVATE THIS CONTEXT
                     </button>
                 </div>
@@ -121,14 +121,14 @@
                 <div class="p-4 space-y-4">
                     <div>
                         <label class="block font-mono font-bold uppercase text-sm mb-2" data-i18n="context_name">CONTEXT NAME</label>
-                        <input type="text" id="new-context-name" class="w-full border-[3px] border-black p-3 font-mono text-base focus:outline-none focus:ring-0 rounded-none bg-white" placeholder="Professional">
+                        <input type="text" id="new-context-name" class="w-full border-[3px] border-black p-3 font-mono text-base focus:outline-none focus:ring-0 rounded-none bg-white" placeholder="Professional" data-tooltip="tip_context_name">
                     </div>
                     <div>
                         <label class="block font-mono font-bold uppercase text-sm mb-2" data-i18n="context_slug">CONTEXT SLUG</label>
-                        <input type="text" id="new-context-slug" class="w-full border-[3px] border-black p-3 font-mono text-base focus:outline-none focus:ring-0 rounded-none bg-white" placeholder="professional">
+                        <input type="text" id="new-context-slug" class="w-full border-[3px] border-black p-3 font-mono text-base focus:outline-none focus:ring-0 rounded-none bg-white" placeholder="professional" data-tooltip="tip_context_slug">
                     </div>
                     <div id="create-context-error" class="hidden border-[3px] border-black p-3 font-mono text-center bg-white text-sm"></div>
-                    <button id="create-context-btn" class="w-full bg-black text-white p-3 font-mono font-bold uppercase border-[3px] border-black hover:bg-white hover:text-black cursor-pointer" data-i18n="create_context">
+                    <button id="create-context-btn" class="w-full bg-black text-white p-3 font-mono font-bold uppercase border-[3px] border-black hover:bg-white hover:text-black cursor-pointer" data-i18n="create_context" data-tooltip="tip_create_context">
                         CREATE CONTEXT
                     </button>
                 </div>
@@ -212,6 +212,7 @@
             loggedInUser.textContent = currentUser.name || currentUser.email;
 
             await Promise.all([loadContexts(), loadAvailableAttributes()]);
+            translateTooltips();
         }
 
         // Load all available profile attributes
@@ -311,7 +312,7 @@
                 row.innerHTML = `
                     <div class="flex items-center justify-between">
                         <label class="block font-mono font-bold uppercase text-sm">${translatedKey}</label>
-                        <button onclick="deleteAttribute('${key}')" class="bg-white text-black px-2 py-1 font-mono font-bold uppercase border-[2px] border-black hover:bg-black hover:text-white cursor-pointer text-xs">
+                        <button onclick="deleteAttribute('${key}')" class="bg-white text-black px-2 py-1 font-mono font-bold uppercase border-[2px] border-black hover:bg-black hover:text-white cursor-pointer text-xs" data-tooltip="tip_delete_attr">
                             ✕
                         </button>
                     </div>
@@ -336,6 +337,7 @@
 
             attributesSection.classList.remove('hidden');
             hideError();
+            translateTooltips(currentLocale);
         }
 
         // Escape HTML for safe insertion
@@ -599,6 +601,7 @@
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 el.textContent = t(el.dataset.i18n, locale);
             });
+            translateTooltips(locale);
         }
 
         loadContextBtn.addEventListener('click', () => {

@@ -10,10 +10,10 @@
 <body class="bg-white min-h-screen py-10 px-4">
     <div class="max-w-2xl mx-auto border-4 border-black">
         <nav class="bg-gray-100 border-b-4 border-black p-3 flex gap-4 font-mono text-sm uppercase">
-            <a href="/" class="font-bold hover:underline">Viewer</a>
-            <a href="/editor" class="font-bold hover:underline">Editor</a>
-            <a href="/teams" class="font-bold hover:underline">Teams</a>
-            <a href="/register" class="font-bold hover:underline">Register</a>
+            <a href="/" class="font-bold hover:underline" data-tooltip="tip_nav_viewer" data-tooltip-pos="bottom">Viewer</a>
+            <a href="/editor" class="font-bold hover:underline" data-tooltip="tip_nav_editor" data-tooltip-pos="bottom">Editor</a>
+            <a href="/teams" class="font-bold hover:underline" data-tooltip="tip_nav_teams" data-tooltip-pos="bottom">Teams</a>
+            <a href="/register" class="font-bold hover:underline" data-tooltip="tip_nav_register" data-tooltip-pos="bottom">Register</a>
         </nav>
 
         <!-- Header -->
@@ -35,23 +35,23 @@
         <div id="register-form" class="p-4 space-y-4">
             <div>
                 <label class="block font-mono font-bold uppercase text-sm mb-2">NAME</label>
-                <input type="text" id="name-input" class="w-full border-[3px] border-black p-3 font-mono text-base focus:outline-none focus:ring-0 rounded-none bg-white" placeholder="John Doe">
+                <input type="text" id="name-input" class="w-full border-[3px] border-black p-3 font-mono text-base focus:outline-none focus:ring-0 rounded-none bg-white" placeholder="John Doe" data-tooltip="tip_reg_name">
             </div>
             <div>
                 <label class="block font-mono font-bold uppercase text-sm mb-2">USERNAME</label>
-                <input type="text" id="username-input" class="w-full border-[3px] border-black p-3 font-mono text-base focus:outline-none focus:ring-0 rounded-none bg-white" placeholder="johndoe">
+                <input type="text" id="username-input" class="w-full border-[3px] border-black p-3 font-mono text-base focus:outline-none focus:ring-0 rounded-none bg-white" placeholder="johndoe" data-tooltip="tip_reg_username">
             </div>
             <div>
                 <label class="block font-mono font-bold uppercase text-sm mb-2">EMAIL</label>
-                <input type="email" id="email-input" class="w-full border-[3px] border-black p-3 font-mono text-base focus:outline-none focus:ring-0 rounded-none bg-white" placeholder="user@example.com">
+                <input type="email" id="email-input" class="w-full border-[3px] border-black p-3 font-mono text-base focus:outline-none focus:ring-0 rounded-none bg-white" placeholder="user@example.com" data-tooltip="tip_reg_email">
             </div>
             <div>
                 <label class="block font-mono font-bold uppercase text-sm mb-2">PASSWORD</label>
-                <input type="password" id="password-input" class="w-full border-[3px] border-black p-3 font-mono text-base focus:outline-none focus:ring-0 rounded-none bg-white" placeholder="********">
+                <input type="password" id="password-input" class="w-full border-[3px] border-black p-3 font-mono text-base focus:outline-none focus:ring-0 rounded-none bg-white" placeholder="********" data-tooltip="tip_reg_password">
             </div>
             <div>
                 <label class="block font-mono font-bold uppercase text-sm mb-2">CONFIRM PASSWORD</label>
-                <input type="password" id="password-confirm-input" class="w-full border-[3px] border-black p-3 font-mono text-base focus:outline-none focus:ring-0 rounded-none bg-white" placeholder="********">
+                <input type="password" id="password-confirm-input" class="w-full border-[3px] border-black p-3 font-mono text-base focus:outline-none focus:ring-0 rounded-none bg-white" placeholder="********" data-tooltip="tip_reg_password_confirm">
             </div>
 
             <!-- Validation Errors -->
@@ -61,7 +61,7 @@
                 </div>
             </div>
 
-            <button id="register-btn" class="w-full bg-black text-white p-3 font-mono font-bold uppercase border-[3px] border-black hover:bg-white hover:text-black cursor-pointer">
+            <button id="register-btn" class="w-full bg-black text-white p-3 font-mono font-bold uppercase border-[3px] border-black hover:bg-white hover:text-black cursor-pointer" data-tooltip="tip_register_btn">
                 REGISTER
             </button>
 
@@ -71,6 +71,7 @@
         </div>
     </div>
 
+    @include('partials.i18n')
     @verbatim
     <script>
         // State
@@ -97,6 +98,7 @@
                 alreadyLoggedIn.classList.remove('hidden');
                 loggedInName.textContent = currentUser.name || currentUser.email;
             }
+            translateTooltips();
         }
 
         // Show errors
