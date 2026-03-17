@@ -182,3 +182,60 @@ test('omitting context falls back to first active context when no default set', 
         ->assertJsonPath('context', 'work')
         ->assertJsonPath('display_name.value', 'Fallback Context Name');
 });
+
+test('profile retrieval includes profile_photo as public field', function () {
+    ContextValue::factory()->create([
+        'context_id' => $this->context->id,
+        'profile_attribute_id' => $this->nameAttr->id,
+        'value' => 'Test Name',
+        'visibility' => 'public',
+    ]);
+
+    $response = $this->getJson("/api/profiles/{$this->user->username}/work");
+
+    $response->assertOk()
+        ->assertJsonPath('profile_photo.value', $this->user->profile_photo)
+        ->assertJsonPath('profile_photo.visibility', 'public');
+});
+
+test('profile_photo is visible to unauthenticated users', function () {
+    ContextValue::factory()->create([
+        'context_id' => $this->context->id,
+        'profile_attribute_id' => $this->nameAttr->id,
+        'value' => 'Test Name',
+        'visibility' => 'public',
+    ]);
+
+    $response = $this->getJson("/api/profiles/{$this->user->username}/work");
+
+    $response->assertOk()
+        ->assertJsonPath('profile_photo.value', $this->user->profile_photo);
+});
+
+test('profile without photo does not include profile_photo field', function () {
+    $this->user->update(['profile_photo' => null]);
+
+    ContextValue::factory()->create([
+        'context_id' => $this->context->id,
+        'profile_attribute_id' => $this->nameAttr->id,
+        'value' => 'Test Name',
+        'visibility' => 'public',
+    ]);
+
+    $response = $this->getJson("/api/profiles/{$this->user->username}/work");
+
+    $response->assertOk()
+        ->assertJsonMissing(['profile_photo']);
+});
+
+test('viewer attributes endpoint returns is_system field', function () {
+    ProfileAttribute::factory()->create(['key' => 'viewer_test', 'is_system' => true]);
+
+    $response = $this->getJson('/api/viewer/attributes');
+
+    $response->assertOk();
+    $attributes = collect($response->json());
+    $attr = $attributes->firstWhere('key', 'viewer_test');
+    expect($attr)->not->toBeNull();
+    expect($attr['is_system'])->toBeTrue();
+});

@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Context;
+use App\Models\ContextValue;
+use App\Models\ProfileAttribute;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
@@ -32,7 +34,7 @@ class AuthController extends Controller
             ]);
         }
 
-        $token = $user->createToken('profile-viewer')->plainTextToken;
+        $token = $user->createToken('decentid')->plainTextToken;
 
         return response()->json([
             'token' => $token,
@@ -41,6 +43,7 @@ class AuthController extends Controller
                 'name' => $user->name,
                 'username' => $user->username,
                 'email' => $user->email,
+                'profile_photo' => $user->profile_photo,
             ],
         ]);
     }
@@ -64,9 +67,10 @@ class AuthController extends Controller
             'username' => $request->username,
             'email' => $request->email,
             'password' => $request->password,
+            'profile_photo' => 'https://www.gravatar.com/avatar/' . md5($request->username) . '?d=identicon&s=200',
         ]);
 
-        Context::create([
+        $context = Context::create([
             'user_id' => $user->id,
             'name' => 'Personal',
             'slug' => 'personal',
@@ -74,7 +78,19 @@ class AuthController extends Controller
             'is_active' => true,
         ]);
 
-        $token = $user->createToken('profile-viewer')->plainTextToken;
+        // Seed display_name from the registration name
+        $displayNameAttr = ProfileAttribute::where('key', 'display_name')->first();
+        if ($displayNameAttr) {
+            ContextValue::create([
+                'context_id' => $context->id,
+                'profile_attribute_id' => $displayNameAttr->id,
+                'value' => $request->name,
+                'visibility' => 'public',
+                'locale' => 'en',
+            ]);
+        }
+
+        $token = $user->createToken('decentid')->plainTextToken;
 
         return response()->json([
             'token' => $token,
@@ -83,6 +99,7 @@ class AuthController extends Controller
                 'name' => $user->name,
                 'username' => $user->username,
                 'email' => $user->email,
+                'profile_photo' => $user->profile_photo,
             ],
         ], 201);
     }

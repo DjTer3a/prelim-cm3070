@@ -15,7 +15,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanc
 
 // Simple endpoints for profile viewer (plain JSON)
 Route::get('/viewer/users', function () {
-    return User::select('id', 'name', 'username', 'email')
+    return User::select('id', 'name', 'username', 'email', 'profile_photo')
         ->whereIn('username', ['admin', 'imhotep', 'nefertiti', 'tutankhamun', 'cleopatra', 'ramesses'])
         ->get();
 });
@@ -25,7 +25,7 @@ Route::get('/viewer/contexts', function () {
 });
 
 Route::get('/viewer/attributes', function () {
-    return \App\Models\ProfileAttribute::select('id', 'key', 'name', 'translations', 'data_type', 'schema_type')->get();
+    return \App\Models\ProfileAttribute::select('id', 'key', 'name', 'translations', 'data_type', 'schema_type', 'is_system')->get();
 });
 
 // Profile endpoint: /api/profiles/{username}/{context?}?format=json|json-ld
@@ -45,6 +45,27 @@ Route::middleware('auth:sanctum')->group(function () {
         ->name('api.profiles.deleteContext');
     Route::delete('/profiles/{username}/{context}/{attributeKey}', [ProfileController::class, 'deleteValue'])
         ->name('api.profiles.deleteValue');
+    Route::post('/profiles/{username}/photo', [ProfileController::class, 'uploadPhoto'])
+        ->name('api.profiles.uploadPhoto');
+
+    // Attribute creation
+    Route::post('/attributes', function (Request $request) {
+        $request->validate([
+            'key' => 'required|string|max:255|alpha_dash|unique:profile_attributes,key',
+            'name' => 'required|string|max:255',
+            'data_type' => 'required|string|in:string,email,url,text',
+        ]);
+
+        $attribute = \App\Models\ProfileAttribute::create([
+            'key' => $request->key,
+            'name' => $request->name,
+            'data_type' => $request->data_type,
+            'schema_type' => null,
+            'is_system' => false,
+        ]);
+
+        return response()->json($attribute, 201);
+    })->name('api.attributes.store');
 
     // Team routes
     Route::get('/teams', [TeamController::class, 'index'])->name('api.teams.index');
@@ -54,4 +75,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/teams/{slug}', [TeamController::class, 'destroy'])->name('api.teams.destroy');
     Route::post('/teams/{slug}/members', [TeamController::class, 'addMember'])->name('api.teams.addMember');
     Route::delete('/teams/{slug}/members/{username}', [TeamController::class, 'removeMember'])->name('api.teams.removeMember');
+
+    // Invitation routes
+    Route::get('/invitations', [TeamController::class, 'pendingInvitations'])->name('api.invitations.index');
+    Route::post('/invitations/{slug}/accept', [TeamController::class, 'acceptInvitation'])->name('api.invitations.accept');
+    Route::post('/invitations/{slug}/decline', [TeamController::class, 'declineInvitation'])->name('api.invitations.decline');
 });

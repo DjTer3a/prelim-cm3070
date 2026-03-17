@@ -88,3 +88,41 @@ test('invalid format falls back to json', function () {
     expect($response->headers->get('Content-Type'))->toContain('application/json');
     $response->assertJsonPath('context', 'work');
 });
+
+test('profile_photo appears in vcard format as PHOTO', function () {
+    $response = $this->get("/api/profiles/{$this->user->username}/work?format=vcard");
+
+    $response->assertOk();
+    expect($response->getContent())->toContain('PHOTO:');
+});
+
+test('profile_photo appears in csv format', function () {
+    $response = $this->get("/api/profiles/{$this->user->username}/work?format=csv");
+
+    $response->assertOk();
+    expect($response->getContent())->toContain('profile_photo,');
+});
+
+test('profile_photo maps to image in xml format', function () {
+    $response = $this->get("/api/profiles/{$this->user->username}/work?format=xml");
+
+    $response->assertOk();
+    $content = $response->getContent();
+    expect($content)->toContain('<image');
+    expect($content)->toContain('gravatar.com/avatar');
+});
+
+test('profile_photo maps to schema:image in rdf format', function () {
+    $response = $this->get("/api/profiles/{$this->user->username}/work?format=rdf");
+
+    $response->assertOk();
+    expect($response->getContent())->toContain('schema:image');
+});
+
+test('profile_photo appears in json-ld format', function () {
+    $response = $this->getJson("/api/profiles/{$this->user->username}/work?format=json-ld");
+
+    $response->assertOk()
+        ->assertJsonPath('profile_photo.value', $this->user->profile_photo)
+        ->assertJsonPath('profile_photo.visibility', 'public');
+});

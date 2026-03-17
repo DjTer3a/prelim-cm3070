@@ -23,9 +23,11 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
+        $username = fake()->unique()->userName();
         return [
             'name' => fake()->name(),
-            'username' => fake()->unique()->userName(),
+            'username' => $username,
+            'profile_photo' => 'https://www.gravatar.com/avatar/' . md5($username) . '?d=identicon&s=200',
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),

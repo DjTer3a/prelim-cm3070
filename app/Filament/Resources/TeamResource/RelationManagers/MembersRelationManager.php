@@ -41,6 +41,14 @@ class MembersRelationManager extends RelationManager
                         'owner' => 'success',
                         default => 'gray',
                     }),
+                Tables\Columns\TextColumn::make('pivot.status')
+                    ->label('Status')
+                    ->badge()
+                    ->color(fn(string $state): string => match ($state) {
+                        'accepted' => 'success',
+                        'pending' => 'warning',
+                        default => 'gray',
+                    }),
             ])
             ->headerActions([
                 Tables\Actions\AttachAction::make()
@@ -53,6 +61,13 @@ class MembersRelationManager extends RelationManager
                                 'member' => 'Member',
                             ])
                             ->default('member')
+                            ->required(),
+                        Forms\Components\Select::make('status')
+                            ->options([
+                                'pending' => 'Pending',
+                                'accepted' => 'Accepted',
+                            ])
+                            ->default('pending')
                             ->required(),
                     ]),
             ])

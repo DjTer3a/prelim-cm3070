@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\Storage;
 
 class ProfileController extends Controller
 {
@@ -262,6 +263,40 @@ class ProfileController extends Controller
         }
 
         return response()->json(['message' => 'Attribute value deleted.']);
+    }
+
+    /**
+     * Upload a profile photo.
+     *
+     * POST /api/profiles/{username}/photo
+     */
+    public function uploadPhoto(Request $request, string $username): JsonResponse
+    {
+        $user = User::where('username', $username)->first();
+        if (!$user) {
+            return $this->errorResponse("User '{$username}' not found", 404);
+        }
+
+        if (!$request->user() || !$request->user()->is($user)) {
+            return $this->errorResponse('Only the profile owner can upload photos.', 403);
+        }
+
+        $request->validate([
+            'photo' => 'required|image|mimes:jpg,jpeg,png,gif,webp|max:2048',
+        ]);
+
+        // Delete old uploaded photo if it's a local file
+        if ($user->profile_photo && str_contains($user->profile_photo, '/storage/profile-photos/')) {
+            $oldPath = str_replace(asset('storage') . '/', '', $user->profile_photo);
+            Storage::disk('public')->delete($oldPath);
+        }
+
+        $path = $request->file('photo')->store('profile-photos', 'public');
+        $url = asset('storage/' . $path);
+
+        $user->update(['profile_photo' => $url]);
+
+        return response()->json(['url' => $url]);
     }
 
     /**

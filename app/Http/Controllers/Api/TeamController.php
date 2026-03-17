@@ -12,7 +12,7 @@ class TeamController extends Controller
 {
     public function index(Request $request): JsonResponse
     {
-        $teams = $request->user()->teams()->with('owner:id,name,username')->get()
+        $teams = $request->user()->teams()->wherePivot('status', 'accepted')->with('owner:id,name,username')->get()
             ->map(fn($team) => [
                 'id' => $team->id,
                 'name' => $team->name,
@@ -41,7 +41,7 @@ class TeamController extends Controller
             'description' => $request->description,
         ]);
 
-        $team->members()->attach($request->user()->id, ['role' => 'owner']);
+        $team->members()->attach($request->user()->id, ['role' => 'owner', 'status' => 'accepted']);
 
         return response()->json([
             'id' => $team->id,
@@ -58,13 +58,21 @@ class TeamController extends Controller
             return $this->errorResponse('Team not found', 404);
         }
 
-        $members = $team->members()->select('users.id', 'users.name', 'users.username')
-            ->get()
+        $isOwner = $request->user() && $team->owner_id === $request->user()->id;
+
+        $membersQuery = $team->members()->select('users.id', 'users.name', 'users.username');
+
+        if (!$isOwner) {
+            $membersQuery->wherePivot('status', 'accepted');
+        }
+
+        $members = $membersQuery->get()
             ->map(fn($m) => [
                 'id' => $m->id,
                 'name' => $m->name,
                 'username' => $m->username,
                 'role' => $m->pivot->role,
+                'status' => $m->pivot->status,
             ]);
 
         return response()->json([
@@ -141,9 +149,9 @@ class TeamController extends Controller
             return $this->errorResponse('User is already a team member.', 422);
         }
 
-        $team->members()->attach($user->id, ['role' => 'member']);
+        $team->members()->attach($user->id, ['role' => 'member', 'status' => 'pending']);
 
-        return response()->json(['message' => "User '{$request->username}' added to team."], 201);
+        return response()->json(['message' => "User '{$request->username}' has been invited to the team."], 201);
     }
 
     public function removeMember(Request $request, string $slug, string $username): JsonResponse
@@ -169,6 +177,60 @@ class TeamController extends Controller
         $team->members()->detach($user->id);
 
         return response()->json(['message' => 'Member removed from team.']);
+    }
+
+    public function pendingInvitations(Request $request): JsonResponse
+    {
+        $invitations = $request->user()->pendingInvitations()->with('owner:id,name,username')->get()
+            ->map(fn($team) => [
+                'id' => $team->id,
+                'name' => $team->name,
+                'slug' => $team->slug,
+                'description' => $team->description,
+                'owner' => $team->owner->only(['id', 'name', 'username']),
+            ]);
+
+        return response()->json($invitations);
+    }
+
+    public function acceptInvitation(Request $request, string $slug): JsonResponse
+    {
+        $team = Team::where('slug', $slug)->first();
+        if (!$team) {
+            return $this->errorResponse('Team not found', 404);
+        }
+
+        $membership = $team->members()->where('users.id', $request->user()->id)
+            ->wherePivot('status', 'pending')
+            ->first();
+
+        if (!$membership) {
+            return $this->errorResponse('No pending invitation found.', 404);
+        }
+
+        $team->members()->updateExistingPivot($request->user()->id, ['status' => 'accepted']);
+
+        return response()->json(['message' => 'Invitation accepted.']);
+    }
+
+    public function declineInvitation(Request $request, string $slug): JsonResponse
+    {
+        $team = Team::where('slug', $slug)->first();
+        if (!$team) {
+            return $this->errorResponse('Team not found', 404);
+        }
+
+        $membership = $team->members()->where('users.id', $request->user()->id)
+            ->wherePivot('status', 'pending')
+            ->first();
+
+        if (!$membership) {
+            return $this->errorResponse('No pending invitation found.', 404);
+        }
+
+        $team->members()->detach($request->user()->id);
+
+        return response()->json(['message' => 'Invitation declined.']);
     }
 
     private function errorResponse(string $message, int $status): JsonResponse

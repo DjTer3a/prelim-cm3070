@@ -24,14 +24,20 @@ class ProfileAttributeResource extends Resource
         return $form
             ->schema([
                 Forms\Components\TextInput::make('key')
-                    ->required(),
+                    ->required()
+                    ->disabled(fn (?ProfileAttribute $record) => $record?->is_system),
                 Forms\Components\TextInput::make('name')
-                    ->required(),
+                    ->required()
+                    ->disabled(fn (?ProfileAttribute $record) => $record?->is_system),
                 Forms\Components\TextInput::make('data_type')
-                    ->required(),
-                Forms\Components\TextInput::make('schema_type'),
-                Forms\Components\Toggle::make('is_system')
-                    ->required(),
+                    ->required()
+                    ->disabled(fn (?ProfileAttribute $record) => $record?->is_system),
+                Forms\Components\TextInput::make('schema_type')
+                    ->disabled(fn (?ProfileAttribute $record) => $record?->is_system),
+                Forms\Components\Placeholder::make('is_system_notice')
+                    ->label('System Attribute')
+                    ->content('This is a system attribute and cannot be modified.')
+                    ->visible(fn (?ProfileAttribute $record) => $record?->is_system),
             ]);
     }
 
@@ -63,10 +69,15 @@ class ProfileAttributeResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make()
+                    ->hidden(fn (ProfileAttribute $record) => $record->is_system),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()
+                        ->using(function (\Illuminate\Database\Eloquent\Collection $records) {
+                            $records->reject(fn (ProfileAttribute $record) => $record->is_system)->each->delete();
+                        }),
                 ]),
             ]);
     }

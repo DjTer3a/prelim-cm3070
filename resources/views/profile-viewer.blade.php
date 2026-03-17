@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Identity Viewer</title>
+    <title>decentID - Viewer</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="bg-white min-h-screen py-10 px-4">
@@ -17,7 +17,7 @@
         </nav>
         <!-- Header -->
         <h1 class="bg-black text-white p-4 text-xl font-bold uppercase font-mono" data-i18n="identity_viewer">
-            IDENTITY VIEWER
+            DECENTID VIEWER
         </h1>
 
         <!-- Selection Section -->
@@ -27,6 +27,10 @@
                 <select id="username-select" class="w-full border-[3px] border-black p-3 font-mono text-base focus:outline-none rounded-none bg-white appearance-none cursor-pointer" data-tooltip="tip_username_select">
                     <option value="">-- Select User --</option>
                 </select>
+                <div id="selected-user-photo" class="hidden flex items-center gap-3 mt-3">
+                    <img id="viewer-user-photo" src="" alt="Profile Photo" class="w-14 h-14 border-[3px] border-black object-cover">
+                    <span id="viewer-user-name" class="font-mono font-bold"></span>
+                </div>
             </div>
             <div>
                 <label class="block font-mono font-bold uppercase text-sm mb-2" data-i18n="context">CONTEXT</label>
@@ -538,7 +542,11 @@
 
                     const row = document.createElement('div');
                     row.className = `p-3 font-mono ${getVisibilityClass(visibility)}`;
-                    row.innerHTML = `<span class="font-bold">${translatedKey}:</span> ${displayValue || '<em class="opacity-50">' + t('not_set', locale) + '</em>'}`;
+                    if (key === 'profile_photo' && value) {
+                        row.innerHTML = `<span class="font-bold">${translatedKey}:</span> <img src="${escapeHtml(String(value))}" alt="Profile Photo" class="w-16 h-16 border-[3px] border-black object-cover inline-block align-middle mt-1">`;
+                    } else {
+                        row.innerHTML = `<span class="font-bold">${translatedKey}:</span> ${displayValue || '<em class="opacity-50">' + t('not_set', locale) + '</em>'}`;
+                    }
                     profileData.appendChild(row);
                     simpleData.appendChild(row.cloneNode(true));
                 }
@@ -599,6 +607,13 @@
             profileSection.classList.remove('hidden');
         }
 
+        // Escape HTML for safe insertion
+        function escapeHtml(str) {
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
         // Get visibility color class
         function getVisibilityClass(visibility) {
             switch (visibility) {
@@ -626,7 +641,11 @@
 
                 const translatedKey = apiLabels[key] || tKey(key, locale);
                 const displayValue = typeof value === 'object' ? JSON.stringify(value) : value;
-                row.innerHTML = `<span class="font-bold">${translatedKey}:</span> ${displayValue || '<em class="opacity-50">' + t('not_set', locale) + '</em>'}`;
+                if (key === 'profile_photo' && value) {
+                    row.innerHTML = `<span class="font-bold">${translatedKey}:</span> <img src="${escapeHtml(String(value))}" alt="Profile Photo" class="w-16 h-16 border-[3px] border-black object-cover inline-block align-middle mt-1">`;
+                } else {
+                    row.innerHTML = `<span class="font-bold">${translatedKey}:</span> ${displayValue || '<em class="opacity-50">' + t('not_set', locale) + '</em>'}`;
+                }
 
                 profileData.appendChild(row);
             }
@@ -660,7 +679,11 @@
 
                 const translatedKey = apiLabels[key] || tKey(key, simpleLocale);
                 const displayValue = typeof value === 'object' ? JSON.stringify(value) : value;
-                row.innerHTML = `<span class="font-bold">${translatedKey}:</span> ${displayValue || '<em class="opacity-50">' + t('not_set', simpleLocale) + '</em>'}`;
+                if (key === 'profile_photo' && value) {
+                    row.innerHTML = `<span class="font-bold">${translatedKey}:</span> <img src="${escapeHtml(String(value))}" alt="Profile Photo" class="w-16 h-16 border-[3px] border-black object-cover inline-block align-middle mt-1">`;
+                } else {
+                    row.innerHTML = `<span class="font-bold">${translatedKey}:</span> ${displayValue || '<em class="opacity-50">' + t('not_set', simpleLocale) + '</em>'}`;
+                }
 
                 simpleData.appendChild(row);
             }
@@ -800,6 +823,19 @@
             viewBtn.disabled = true;
             profileSection.classList.add('hidden');
             hideError();
+
+            // Show profile photo for selected user
+            const photoContainer = document.getElementById('selected-user-photo');
+            if (value && value !== '__all__') {
+                const selectedUser = users.find(u => u.username === value);
+                if (selectedUser) {
+                    document.getElementById('viewer-user-photo').src = selectedUser.profile_photo || '';
+                    document.getElementById('viewer-user-name').textContent = '@' + selectedUser.username;
+                    photoContainer.classList.remove('hidden');
+                }
+            } else {
+                photoContainer.classList.add('hidden');
+            }
 
             if (value === '__all__') {
                 // "All Users" selected - skip context, enable view

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Team Management</title>
+    <title>decentID - Team Management</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="bg-white min-h-screen py-10 px-4">
@@ -18,7 +18,7 @@
 
         <!-- Header -->
         <h1 class="bg-black text-white p-4 text-xl font-bold uppercase font-mono">
-            TEAM MANAGEMENT
+            DECENTID TEAMS
         </h1>
 
         <!-- Not Logged In -->
@@ -46,6 +46,19 @@
                 <button id="logout-btn" class="bg-white text-black p-2 px-4 font-mono font-bold uppercase border-[3px] border-black hover:bg-black hover:text-white cursor-pointer text-xs" data-tooltip="tip_logout">
                     LOGOUT
                 </button>
+            </div>
+
+            <!-- Pending Invitations -->
+            <div id="invitations-section">
+                <div class="bg-black text-white p-3">
+                    <h2 class="text-lg font-bold uppercase font-mono">PENDING INVITATIONS</h2>
+                </div>
+                <div id="invitations-container">
+                    <!-- Invitations will be inserted here -->
+                </div>
+                <div id="no-invitations" class="hidden p-4 font-mono text-center text-sm">
+                    No pending invitations.
+                </div>
             </div>
 
             <!-- Teams List -->
@@ -103,6 +116,7 @@
         let currentUser = JSON.parse(localStorage.getItem('current_user') || 'null');
         let teams = [];
         let allUsers = [];
+        let invitations = [];
 
         // DOM Elements
         const notLoggedIn = document.getElementById('not-logged-in');
@@ -152,6 +166,7 @@
             loggedInUser.textContent = currentUser.name || currentUser.email;
 
             await loadAllUsers();
+            await loadInvitations();
             await loadTeams();
             translateTooltips();
         }
@@ -165,6 +180,85 @@
                 }
             } catch (error) {
                 console.error('Failed to load users:', error);
+            }
+        }
+
+        // Load pending invitations
+        async function loadInvitations() {
+            const container = document.getElementById('invitations-container');
+            const noInvitations = document.getElementById('no-invitations');
+
+            try {
+                const response = await api('/api/invitations');
+                if (!response.ok) {
+                    container.innerHTML = '';
+                    noInvitations.classList.remove('hidden');
+                    return;
+                }
+
+                invitations = await response.json();
+
+                if (invitations.length === 0) {
+                    container.innerHTML = '';
+                    noInvitations.classList.remove('hidden');
+                    return;
+                }
+
+                noInvitations.classList.add('hidden');
+                container.innerHTML = '';
+
+                invitations.forEach(inv => {
+                    const el = document.createElement('div');
+                    el.className = 'border-b-4 border-black p-4 flex items-center justify-between';
+                    el.innerHTML = `
+                        <div>
+                            <span class="font-mono font-bold text-base">${escapeHtml(inv.name)}</span>
+                            <span class="font-mono text-sm ml-2 opacity-60">(${escapeHtml(inv.slug)})</span>
+                            <div class="font-mono text-xs mt-1 opacity-60">Invited by ${escapeHtml(inv.owner.name)}</div>
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="acceptInvitation('${escapeHtml(inv.slug)}')" class="bg-black text-white px-3 py-2 font-mono font-bold uppercase border-[3px] border-black hover:bg-white hover:text-black cursor-pointer text-xs" data-tooltip="tip_accept_invitation">
+                                ACCEPT
+                            </button>
+                            <button onclick="declineInvitation('${escapeHtml(inv.slug)}')" class="bg-white text-black px-3 py-2 font-mono font-bold uppercase border-[3px] border-black hover:bg-black hover:text-white cursor-pointer text-xs" data-tooltip="tip_decline_invitation">
+                                DECLINE
+                            </button>
+                        </div>
+                    `;
+                    container.appendChild(el);
+                });
+                translateTooltips();
+            } catch (error) {
+                container.innerHTML = '';
+                noInvitations.classList.remove('hidden');
+                console.error('Failed to load invitations:', error);
+            }
+        }
+
+        // Accept invitation
+        async function acceptInvitation(slug) {
+            try {
+                const response = await api(`/api/invitations/${slug}/accept`, { method: 'POST' });
+                if (response.ok) {
+                    await loadInvitations();
+                    await loadTeams();
+                }
+            } catch (error) {
+                console.error('Failed to accept invitation:', error);
+            }
+        }
+
+        // Decline invitation
+        async function declineInvitation(slug) {
+            if (!confirm('Decline this team invitation?')) return;
+
+            try {
+                const response = await api(`/api/invitations/${slug}/decline`, { method: 'POST' });
+                if (response.ok) {
+                    await loadInvitations();
+                }
+            } catch (error) {
+                console.error('Failed to decline invitation:', error);
             }
         }
 
@@ -292,11 +386,13 @@
 
                     const username = memberUser.username || memberUser.name || 'Unknown';
                     const role = member.role || 'member';
+                    const status = member.status || 'accepted';
 
                     let memberHtml = `
                         <span>
                             <strong>${escapeHtml(username)}</strong>
                             <span class="ml-1 opacity-60 text-xs uppercase">${escapeHtml(role)}</span>
+                            ${status === 'pending' ? '<span class="ml-1 text-xs uppercase font-mono bg-yellow-200 text-yellow-800 px-1">(pending)</span>' : ''}
                         </span>
                     `;
 

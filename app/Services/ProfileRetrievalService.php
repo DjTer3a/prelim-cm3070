@@ -89,6 +89,15 @@ class ProfileRetrievalService
             ]
         ]);
 
+        // Inject universal profile_photo from user model
+        if ($user->profile_photo) {
+            $values->put('profile_photo', [
+                'value' => $user->profile_photo,
+                'visibility' => 'public',
+            ]);
+            $labels['profile_photo'] = 'Profile Photo';
+        }
+
         return match ($format) {
             'json-ld' => $this->formatAsJsonLd($values, $user, $context, $labels),
             'rdf' => ['_raw' => $this->formatAsRdf($values, $user, $context), '_content_type' => 'text/turtle'],
@@ -158,7 +167,8 @@ class ProfileRetrievalService
         }
 
         return $owner->teams()
-            ->whereHas('members', fn($q) => $q->where('users.id', $requester->id))
+            ->wherePivot('status', 'accepted')
+            ->whereHas('members', fn($q) => $q->where('users.id', $requester->id)->where('team_user.status', 'accepted'))
             ->exists();
     }
 
@@ -250,6 +260,7 @@ class ProfileRetrievalService
             'note' => 'NOTE',
             'bio' => 'NOTE',
             'photo' => 'PHOTO',
+            'profile_photo' => 'PHOTO',
             'nickname' => 'NICKNAME',
         ];
 
@@ -317,6 +328,7 @@ class ProfileRetrievalService
             'bio' => 'description',
             'address' => 'address',
             'photo' => 'image',
+            'profile_photo' => 'image',
         ];
 
         return $map[$key] ?? $key;

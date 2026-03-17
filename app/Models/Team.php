@@ -25,6 +25,11 @@ class Team extends Model
 
     public function members(): BelongsToMany
     {
-        return $this->belongsToMany(User::class)->withPivot('role')->withTimestamps();
+        return $this->belongsToMany(User::class)->withPivot('role', 'status')->withTimestamps();
+    }
+
+    public function acceptedMembers(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class)->withPivot('role', 'status')->withTimestamps()->wherePivot('status', 'accepted');
     }
 }

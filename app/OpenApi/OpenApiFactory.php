@@ -23,6 +23,7 @@ class OpenApiFactory implements OpenApiFactoryInterface
 
         $this->addAuthEndpoints($openApi);
         $this->addProfileEndpoints($openApi);
+        $this->addAttributeEndpoints($openApi);
         $this->addTeamEndpoints($openApi);
         $this->addViewerEndpoints($openApi);
 
@@ -313,6 +314,49 @@ class OpenApiFactory implements OpenApiFactoryInterface
             ),
         ));
 
+        // POST /api/profiles/{username}/photo
+        $openApi->getPaths()->addPath('/api/profiles/{username}/photo', new PathItem(
+            post: new Operation(
+                operationId: 'api_profiles_uploadPhoto',
+                tags: ['Profiles'],
+                summary: 'Upload a profile photo',
+                description: 'Upload a profile photo for the user. Accepts jpg, jpeg, png, gif, webp (max 2MB). Only the profile owner can upload. Requires Bearer token authentication.',
+                security: [['Bearer Token' => []]],
+                parameters: [$usernameParam],
+                requestBody: new RequestBody(
+                    content: new \ArrayObject([
+                        'multipart/form-data' => [
+                            'schema' => [
+                                'type' => 'object',
+                                'required' => ['photo'],
+                                'properties' => [
+                                    'photo' => ['type' => 'string', 'format' => 'binary', 'description' => 'Image file (jpg, jpeg, png, gif, webp, max 2MB)'],
+                                ],
+                            ],
+                        ],
+                    ]),
+                ),
+                responses: [
+                    '200' => new Response(
+                        description: 'Photo uploaded',
+                        content: new \ArrayObject([
+                            'application/json' => [
+                                'schema' => [
+                                    'type' => 'object',
+                                    'properties' => [
+                                        'url' => ['type' => 'string', 'format' => 'uri', 'description' => 'Public URL of the uploaded photo'],
+                                    ],
+                                ],
+                            ],
+                        ]),
+                    ),
+                    '403' => new Response(description: 'Only the profile owner can upload photos'),
+                    '404' => new Response(description: 'User not found'),
+                    '422' => new Response(description: 'Validation error (invalid image or exceeds 2MB)'),
+                ],
+            ),
+        ));
+
         // PUT/DELETE /api/profiles/{username}/contexts/{context}
         $openApi->getPaths()->addPath('/api/profiles/{username}/contexts/{context}', new PathItem(
             put: new Operation(
@@ -353,6 +397,57 @@ class OpenApiFactory implements OpenApiFactoryInterface
                     '200' => new Response(description: 'Context deactivated'),
                     '403' => new Response(description: 'Only the profile owner can deactivate'),
                     '404' => new Response(description: 'Context not found'),
+                ],
+            ),
+        ));
+    }
+
+    private function addAttributeEndpoints(OpenApi $openApi): void
+    {
+        // POST /api/attributes
+        $openApi->getPaths()->addPath('/api/attributes', new PathItem(
+            post: new Operation(
+                operationId: 'api_attributes_store',
+                tags: ['Attributes'],
+                summary: 'Create a custom profile attribute',
+                description: 'Create a new custom profile attribute definition. The key must be unique and use only alphanumeric characters, dashes, and underscores. Requires Bearer token authentication.',
+                security: [['Bearer Token' => []]],
+                requestBody: new RequestBody(
+                    content: new \ArrayObject([
+                        'application/json' => [
+                            'schema' => [
+                                'type' => 'object',
+                                'required' => ['key', 'name', 'data_type'],
+                                'properties' => [
+                                    'key' => ['type' => 'string', 'example' => 'github_url', 'description' => 'Unique key (alphanumeric, dashes, underscores)'],
+                                    'name' => ['type' => 'string', 'example' => 'GitHub URL'],
+                                    'data_type' => ['type' => 'string', 'enum' => ['string', 'email', 'url', 'text'], 'example' => 'url'],
+                                ],
+                            ],
+                        ],
+                    ]),
+                ),
+                responses: [
+                    '201' => new Response(
+                        description: 'Attribute created',
+                        content: new \ArrayObject([
+                            'application/json' => [
+                                'schema' => [
+                                    'type' => 'object',
+                                    'properties' => [
+                                        'id' => ['type' => 'integer'],
+                                        'key' => ['type' => 'string'],
+                                        'name' => ['type' => 'string'],
+                                        'data_type' => ['type' => 'string'],
+                                        'schema_type' => ['type' => 'string', 'nullable' => true],
+                                        'is_system' => ['type' => 'boolean'],
+                                    ],
+                                ],
+                            ],
+                        ]),
+                    ),
+                    '401' => new Response(description: 'Unauthenticated'),
+                    '422' => new Response(description: 'Validation error (duplicate key or invalid data_type)'),
                 ],
             ),
         ));
@@ -470,6 +565,7 @@ class OpenApiFactory implements OpenApiFactoryInterface
                                                     'name' => ['type' => 'string'],
                                                     'username' => ['type' => 'string'],
                                                     'role' => ['type' => 'string', 'enum' => ['owner', 'member']],
+                                                    'status' => ['type' => 'string', 'enum' => ['pending', 'accepted']],
                                                 ],
                                             ],
                                         ],
@@ -528,8 +624,8 @@ class OpenApiFactory implements OpenApiFactoryInterface
             post: new Operation(
                 operationId: 'api_teams_addMember',
                 tags: ['Teams'],
-                summary: 'Add a member to a team',
-                description: 'Add a user as a team member by username. Only the team owner can add members. Requires Bearer token authentication.',
+                summary: 'Invite a member to a team',
+                description: 'Invite a user to join the team by username. The invitation will have a "pending" status until the user accepts or declines. Only the team owner can invite members. Requires Bearer token authentication.',
                 security: [['Bearer Token' => []]],
                 parameters: [$slugParam],
                 requestBody: new RequestBody(
@@ -546,7 +642,7 @@ class OpenApiFactory implements OpenApiFactoryInterface
                     ]),
                 ),
                 responses: [
-                    '201' => new Response(description: 'Member added'),
+                    '201' => new Response(description: 'Invitation sent'),
                     '403' => new Response(description: 'Only the team owner can add members'),
                     '422' => new Response(description: 'User is already a team member'),
                 ],
@@ -569,6 +665,103 @@ class OpenApiFactory implements OpenApiFactoryInterface
                     '200' => new Response(description: 'Member removed'),
                     '403' => new Response(description: 'Only the team owner can remove members'),
                     '422' => new Response(description: 'Cannot remove the team owner'),
+                ],
+            ),
+        ));
+
+        // GET /api/invitations
+        $openApi->getPaths()->addPath('/api/invitations', new PathItem(
+            get: new Operation(
+                operationId: 'api_invitations_index',
+                tags: ['Invitations'],
+                summary: 'List pending team invitations',
+                description: 'Returns all pending team invitations for the authenticated user. Requires Bearer token authentication.',
+                security: [['Bearer Token' => []]],
+                responses: [
+                    '200' => new Response(
+                        description: 'List of pending invitations',
+                        content: new \ArrayObject([
+                            'application/json' => [
+                                'schema' => [
+                                    'type' => 'array',
+                                    'items' => [
+                                        'type' => 'object',
+                                        'properties' => [
+                                            'id' => ['type' => 'integer'],
+                                            'name' => ['type' => 'string'],
+                                            'slug' => ['type' => 'string'],
+                                            'description' => ['type' => 'string', 'nullable' => true],
+                                            'owner' => [
+                                                'type' => 'object',
+                                                'properties' => [
+                                                    'id' => ['type' => 'integer'],
+                                                    'name' => ['type' => 'string'],
+                                                    'username' => ['type' => 'string'],
+                                                ],
+                                            ],
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ]),
+                    ),
+                    '401' => new Response(description: 'Unauthenticated'),
+                ],
+            ),
+        ));
+
+        // POST /api/invitations/{slug}/accept
+        $openApi->getPaths()->addPath('/api/invitations/{slug}/accept', new PathItem(
+            post: new Operation(
+                operationId: 'api_invitations_accept',
+                tags: ['Invitations'],
+                summary: 'Accept a team invitation',
+                description: 'Accept a pending team invitation. Changes membership status from "pending" to "accepted". Requires Bearer token authentication.',
+                security: [['Bearer Token' => []]],
+                parameters: [$slugParam],
+                responses: [
+                    '200' => new Response(
+                        description: 'Invitation accepted',
+                        content: new \ArrayObject([
+                            'application/json' => [
+                                'schema' => [
+                                    'type' => 'object',
+                                    'properties' => [
+                                        'message' => ['type' => 'string', 'example' => 'Invitation accepted.'],
+                                    ],
+                                ],
+                            ],
+                        ]),
+                    ),
+                    '404' => new Response(description: 'No pending invitation found'),
+                ],
+            ),
+        ));
+
+        // POST /api/invitations/{slug}/decline
+        $openApi->getPaths()->addPath('/api/invitations/{slug}/decline', new PathItem(
+            post: new Operation(
+                operationId: 'api_invitations_decline',
+                tags: ['Invitations'],
+                summary: 'Decline a team invitation',
+                description: 'Decline a pending team invitation. Removes the membership record. Requires Bearer token authentication.',
+                security: [['Bearer Token' => []]],
+                parameters: [$slugParam],
+                responses: [
+                    '200' => new Response(
+                        description: 'Invitation declined',
+                        content: new \ArrayObject([
+                            'application/json' => [
+                                'schema' => [
+                                    'type' => 'object',
+                                    'properties' => [
+                                        'message' => ['type' => 'string', 'example' => 'Invitation declined.'],
+                                    ],
+                                ],
+                            ],
+                        ]),
+                    ),
+                    '404' => new Response(description: 'No pending invitation found'),
                 ],
             ),
         ));
@@ -597,6 +790,7 @@ class OpenApiFactory implements OpenApiFactoryInterface
                                             'name' => ['type' => 'string'],
                                             'username' => ['type' => 'string'],
                                             'email' => ['type' => 'string'],
+                                            'profile_photo' => ['type' => 'string', 'format' => 'uri', 'nullable' => true],
                                         ],
                                     ],
                                 ],

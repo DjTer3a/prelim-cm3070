@@ -16,8 +16,8 @@ use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
 
 return [
-    'title' => 'Identity Profile Manager API',
-    'description' => 'A contextual identity management system. Users have multiple identity contexts (e.g. work, personal, gaming) with per-attribute visibility controls (public, protected, private). Supports JSON, JSON-LD, RDF, vCard, CSV, and XML output formats. Custom endpoints: POST /api/login, POST /api/register, POST /api/logout for auth; GET/PUT /api/profiles/{username}/{context} for profile data; GET/POST/PUT/DELETE /api/teams/{slug} for team management.',
+    'title' => 'decentID API',
+    'description' => 'A contextual identity management system. Users have multiple identity contexts (e.g. work, personal, gaming) with per-attribute visibility controls (public, protected, private). Supports JSON, JSON-LD, RDF, vCard, CSV, and XML output formats. Custom endpoints: POST /api/login, POST /api/register, POST /api/logout for auth; GET/PUT /api/profiles/{username}/{context} for profile data with photo upload; POST /api/attributes for custom attributes; GET/POST/PUT/DELETE /api/teams/{slug} for team management with invitation system (GET /api/invitations, POST accept/decline).',
     'version' => '1.0.0',
     'show_webby' => true,
 

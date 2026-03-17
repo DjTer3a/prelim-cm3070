@@ -42,6 +42,7 @@ class User extends Authenticatable implements FilamentUser
     protected $fillable = [
         'name',
         'username',
+        'profile_photo',
         'email',
         'password',
     ];
@@ -55,6 +56,7 @@ class User extends Authenticatable implements FilamentUser
         'password',
         'remember_token',
         'teams',
+        'pendingInvitations',
     ];
 
     /**
@@ -92,6 +94,11 @@ class User extends Authenticatable implements FilamentUser
 
     public function teams(): BelongsToMany
     {
-        return $this->belongsToMany(Team::class)->withPivot('role')->withTimestamps();
+        return $this->belongsToMany(Team::class)->withPivot('role', 'status')->withTimestamps();
+    }
+
+    public function pendingInvitations(): BelongsToMany
+    {
+        return $this->belongsToMany(Team::class)->withPivot('role', 'status')->withTimestamps()->wherePivot('status', 'pending');
     }
 }

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Register</title>
+    <title>decentID - Register</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="bg-white min-h-screen py-10 px-4">
@@ -18,7 +18,7 @@
 
         <!-- Header -->
         <h1 class="bg-black text-white p-4 text-xl font-bold uppercase font-mono">
-            REGISTER
+            DECENTID REGISTER
         </h1>
 
         <!-- Already Logged In -->

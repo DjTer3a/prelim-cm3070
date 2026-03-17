@@ -24,6 +24,7 @@ class DemoSeeder extends Seeder
             'username' => 'admin',
             'email' => 'admin@admin.com',
             'password' => Hash::make('password'),
+            'profile_photo' => 'https://www.gravatar.com/avatar/' . md5('admin') . '?d=identicon&s=200',
         ]);
 
         $users = $this->createUsers();
@@ -45,6 +46,7 @@ class DemoSeeder extends Seeder
                     'username' => 'imhotep',
                     'email' => 'imhotep@example.com',
                     'password' => Hash::make('password'),
+                    'profile_photo' => 'https://www.gravatar.com/avatar/' . md5('imhotep') . '?d=identicon&s=200',
                 ]),
                 'profiles' => [
                     'work' => [
@@ -77,6 +79,7 @@ class DemoSeeder extends Seeder
                     'username' => 'nefertiti',
                     'email' => 'nefertiti@example.com',
                     'password' => Hash::make('password'),
+                    'profile_photo' => 'https://www.gravatar.com/avatar/' . md5('nefertiti') . '?d=identicon&s=200',
                 ]),
                 'profiles' => [
                     'work' => [
@@ -109,6 +112,7 @@ class DemoSeeder extends Seeder
                     'username' => 'tutankhamun',
                     'email' => 'tutankhamun@example.com',
                     'password' => Hash::make('password'),
+                    'profile_photo' => 'https://www.gravatar.com/avatar/' . md5('tutankhamun') . '?d=identicon&s=200',
                 ]),
                 'profiles' => [
                     'work' => [
@@ -141,6 +145,7 @@ class DemoSeeder extends Seeder
                     'username' => 'cleopatra',
                     'email' => 'cleopatra@example.com',
                     'password' => Hash::make('password'),
+                    'profile_photo' => 'https://www.gravatar.com/avatar/' . md5('cleopatra') . '?d=identicon&s=200',
                 ]),
                 'profiles' => [
                     'work' => [
@@ -173,6 +178,7 @@ class DemoSeeder extends Seeder
                     'username' => 'ramesses',
                     'email' => 'ramesses@example.com',
                     'password' => Hash::make('password'),
+                    'profile_photo' => 'https://www.gravatar.com/avatar/' . md5('ramesses') . '?d=identicon&s=200',
                 ]),
                 'profiles' => [
                     'work' => [
