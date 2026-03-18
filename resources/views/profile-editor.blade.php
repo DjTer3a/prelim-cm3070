@@ -9,11 +9,20 @@
 </head>
 <body class="bg-white min-h-screen py-10 px-4">
     <div class="max-w-2xl mx-auto border-4 border-black">
-        <nav class="bg-gray-100 border-b-4 border-black p-3 flex gap-4 font-mono text-sm uppercase">
+        <nav class="bg-gray-100 border-b-4 border-black p-3 flex items-center gap-4 font-mono text-sm uppercase">
             <a href="/" class="font-bold hover:underline" data-i18n="viewer" data-tooltip="tip_nav_viewer" data-tooltip-pos="bottom">Viewer</a>
             <a href="/editor" class="font-bold hover:underline" data-i18n="editor" data-tooltip="tip_nav_editor" data-tooltip-pos="bottom">Editor</a>
             <a href="/teams" class="font-bold hover:underline" data-i18n="teams" data-tooltip="tip_nav_teams" data-tooltip-pos="bottom">Teams</a>
             <a href="/register" class="font-bold hover:underline" data-i18n="register" data-tooltip="tip_nav_register" data-tooltip-pos="bottom">Register</a>
+            <select id="ui-locale-select" class="ml-auto border-[2px] border-black px-2 py-1 font-mono text-xs bg-white cursor-pointer" data-tooltip="tip_ui_language" data-tooltip-pos="bottom">
+                <option value="en">EN</option>
+                <option value="ar">AR</option>
+                <option value="fr">FR</option>
+                <option value="es">ES</option>
+                <option value="de">DE</option>
+                <option value="zh">ZH</option>
+                <option value="ja">JA</option>
+            </select>
         </nav>
 
         <!-- Header -->
@@ -57,11 +66,17 @@
                 <div class="flex items-center gap-4">
                     <img id="photo-preview" src="" alt="Profile Photo" class="w-20 h-20 border-[3px] border-black object-cover">
                     <div class="flex-1 space-y-2">
-                        <input type="file" id="photo-upload" accept=".jpg,.jpeg,.png,.gif,.webp"
-                               class="block w-full font-mono text-sm border-[3px] border-black p-2 bg-white">
-                        <button id="photo-upload-btn" onclick="uploadPhoto()"
-                                class="bg-black text-white px-4 py-2 font-mono font-bold uppercase text-xs border-[3px] border-black hover:bg-white hover:text-black cursor-pointer"
-                                data-i18n="upload_photo" data-tooltip="tip_upload_photo">UPLOAD</button>
+                        <input type="file" id="photo-upload" accept=".jpg,.jpeg,.png,.gif,.webp" class="hidden"
+                               onchange="document.getElementById('photo-filename').textContent = this.files[0]?.name || ''">
+                        <div class="flex gap-2">
+                            <button onclick="document.getElementById('photo-upload').click()"
+                                    class="bg-white text-black px-4 py-2 font-mono font-bold uppercase text-xs border-[3px] border-black hover:bg-black hover:text-white cursor-pointer"
+                                    data-i18n="choose_image" data-tooltip="tip_upload_photo">CHOOSE IMAGE</button>
+                            <button id="photo-upload-btn" onclick="uploadPhoto()"
+                                    class="bg-black text-white px-4 py-2 font-mono font-bold uppercase text-xs border-[3px] border-black hover:bg-white hover:text-black cursor-pointer"
+                                    data-i18n="upload_photo" data-tooltip="tip_upload_photo">SAVE PHOTO</button>
+                        </div>
+                        <span id="photo-filename" class="font-mono text-xs text-gray-600 truncate"></span>
                     </div>
                 </div>
             </div>
@@ -75,8 +90,8 @@
                     </select>
                 </div>
                 <div>
-                    <label class="block font-mono font-bold uppercase text-sm mb-2" data-i18n="language">LANGUAGE</label>
-                    <select id="locale-select" class="w-full border-[3px] border-black p-3 font-mono text-base focus:outline-none rounded-none bg-white appearance-none cursor-pointer" data-tooltip="tip_locale_select">
+                    <label class="block font-mono font-bold uppercase text-sm mb-2" data-i18n="data_language">DATA LANGUAGE</label>
+                    <select id="data-locale-select" class="w-full border-[3px] border-black p-3 font-mono text-base focus:outline-none rounded-none bg-white appearance-none cursor-pointer" data-tooltip="tip_data_language">
                         <option value="en">English (en)</option>
                         <option value="ar">Arabic (ar)</option>
                         <option value="fr">French (fr)</option>
@@ -210,7 +225,7 @@
         const loggedInUser = document.getElementById('logged-in-user');
         const logoutBtn = document.getElementById('logout-btn');
         const contextSelect = document.getElementById('context-select');
-        const localeSelect = document.getElementById('locale-select');
+        const localeSelect = document.getElementById('data-locale-select');
         const loadContextBtn = document.getElementById('load-context-btn');
         const attributesSection = document.getElementById('attributes-section');
         const contextNameDisplay = document.getElementById('context-name-display');
@@ -833,20 +848,10 @@
         });
 
         localeSelect.addEventListener('change', () => {
-            translatePage(localeSelect.value);
             if (contextSelect.value && currentContextSlug) {
                 loadProfile(contextSelect.value);
             }
         });
-
-        // Translate all data-i18n elements
-        function translatePage(locale) {
-            applyDirection(locale);
-            document.querySelectorAll('[data-i18n]').forEach(el => {
-                el.textContent = t(el.dataset.i18n, locale);
-            });
-            translateTooltips(locale);
-        }
 
         loadContextBtn.addEventListener('click', () => {
             if (contextSelect.value) {
@@ -876,6 +881,7 @@
         });
 
         // Start
+        initGlobalUiLanguage();
         init();
     </script>
     @endverbatim

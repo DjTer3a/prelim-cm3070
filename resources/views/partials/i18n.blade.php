@@ -4,7 +4,7 @@
             // Nav
             viewer: 'Viewer', editor: 'Editor', teams: 'Teams', register: 'Register',
             // Common
-            login: 'LOGIN', logout: 'LOGOUT', language: 'LANGUAGE',
+            login: 'LOGIN', logout: 'LOGOUT', language: 'LANGUAGE', data_language: 'DATA LANGUAGE',
             logged_in_as: 'Logged in as:',
             // Viewer
             identity_viewer: 'DECENTID VIEWER', username: 'USERNAME', context: 'CONTEXT',
@@ -35,7 +35,7 @@
             display_name: 'Display Name', bio: 'Bio', job_title: 'Job Title',
             company: 'Company', location: 'Location', website: 'Website',
             phone: 'Phone', avatar: 'Avatar', nickname: 'Nickname', profile_photo: 'Profile Photo',
-            upload_photo: 'UPLOAD', photo_uploaded: 'Photo uploaded. Click SAVE CHANGES to apply.',
+            upload_photo: 'SAVE PHOTO', choose_image: 'CHOOSE IMAGE', photo_uploaded: 'Photo uploaded. Click SAVE CHANGES to apply.',
             // Tooltips - Navigation
             tip_nav_viewer: 'View user identity profiles', tip_nav_editor: 'Edit your profile attributes',
             tip_nav_teams: 'Manage team memberships', tip_nav_register: 'Create a new account',
@@ -58,6 +58,8 @@
             tip_attr_name: 'A human-readable name for the attribute', tip_attr_key: 'A unique key identifier (auto-generated)',
             tip_attr_type: 'The data type for this attribute', tip_create_attr: 'Create a new custom attribute',
 
+            tip_ui_language: 'Change the website interface language',
+            tip_data_language: 'Change the language for profile data',
             tip_upload_photo: 'Upload a profile photo',
             // Tooltips - Register
             tip_reg_name: 'Your full display name', tip_reg_username: 'A unique username for your profile URL',
@@ -75,7 +77,7 @@
         },
         ar: {
             viewer: 'عارض', editor: 'محرر', teams: 'فرق', register: 'تسجيل',
-            login: 'تسجيل الدخول', logout: 'تسجيل الخروج', language: 'اللغة',
+            login: 'تسجيل الدخول', logout: 'تسجيل الخروج', language: 'اللغة', data_language: 'لغة البيانات',
             logged_in_as: 'مسجل كـ:',
             identity_viewer: 'DECENTID VIEWER', username: 'اسم المستخدم', context: 'السياق',
             view_profile: 'عرض الملف', profile_data: 'بيانات الملف',
@@ -103,7 +105,7 @@
             display_name: 'الاسم المعروض', bio: 'السيرة الذاتية', job_title: 'المسمى الوظيفي',
             company: 'الشركة', location: 'الموقع', website: 'الموقع الإلكتروني',
             phone: 'الهاتف', avatar: 'الصورة الشخصية', nickname: 'الاسم المستعار', profile_photo: 'صورة الملف الشخصي',
-            upload_photo: 'رفع', photo_uploaded: 'تم رفع الصورة. انقر حفظ التغييرات للتطبيق.',
+            upload_photo: 'حفظ الصورة', choose_image: 'اختيار صورة', photo_uploaded: 'تم رفع الصورة. انقر حفظ التغييرات للتطبيق.',
             tip_nav_viewer: 'عرض ملفات الهوية', tip_nav_editor: 'تعديل سمات ملفك',
             tip_nav_teams: 'إدارة عضويات الفرق', tip_nav_register: 'إنشاء حساب جديد',
             tip_username_select: 'اختر مستخدم لعرض ملفه', tip_context_select: 'اختر سياق الهوية للعرض',
@@ -123,6 +125,8 @@
             tip_attr_name: 'اسم مقروء للسمة', tip_attr_key: 'معرف فريد (يُنشأ تلقائياً)',
             tip_attr_type: 'نوع البيانات لهذه السمة', tip_create_attr: 'إنشاء سمة مخصصة جديدة',
 
+            tip_ui_language: 'تغيير لغة واجهة الموقع',
+            tip_data_language: 'تغيير لغة بيانات الملف الشخصي',
             tip_upload_photo: 'رفع صورة الملف الشخصي',
             tip_reg_name: 'اسمك الكامل', tip_reg_username: 'اسم مستخدم فريد لرابط ملفك',
             tip_reg_email: 'بريدك الإلكتروني لتسجيل الدخول', tip_reg_password: 'اختر كلمة مرور آمنة',
@@ -137,7 +141,7 @@
         },
         fr: {
             viewer: 'Visionneuse', editor: 'Editeur', teams: 'Equipes', register: 'Inscription',
-            login: 'CONNEXION', logout: 'DECONNEXION', language: 'LANGUE',
+            login: 'CONNEXION', logout: 'DECONNEXION', language: 'LANGUE', data_language: 'LANGUE DES DONNEES',
             logged_in_as: 'Connecte en tant que:',
             identity_viewer: 'DECENTID VIEWER', username: 'NOM D\'UTILISATEUR', context: 'CONTEXTE',
             view_profile: 'VOIR LE PROFIL', profile_data: 'DONNEES DU PROFIL',
@@ -165,7 +169,7 @@
             display_name: 'Nom affiche', bio: 'Biographie', job_title: 'Poste',
             company: 'Entreprise', location: 'Lieu', website: 'Site web',
             phone: 'Telephone', avatar: 'Avatar', nickname: 'Surnom', profile_photo: 'Photo de profil',
-            upload_photo: 'TELECHARGER', photo_uploaded: 'Photo telechargee. Cliquez ENREGISTRER pour appliquer.',
+            upload_photo: 'ENREGISTRER PHOTO', choose_image: 'CHOISIR IMAGE', photo_uploaded: 'Photo telechargee. Cliquez ENREGISTRER pour appliquer.',
             tip_nav_viewer: 'Voir les profils d\'identite', tip_nav_editor: 'Modifier vos attributs de profil',
             tip_nav_teams: 'Gerer les equipes', tip_nav_register: 'Creer un nouveau compte',
             tip_username_select: 'Choisir un utilisateur a consulter', tip_context_select: 'Choisir le contexte d\'identite',
@@ -185,6 +189,8 @@
             tip_attr_name: 'Un nom lisible pour l\'attribut', tip_attr_key: 'Identifiant unique (genere automatiquement)',
             tip_attr_type: 'Le type de donnees pour cet attribut', tip_create_attr: 'Creer un nouvel attribut personnalise',
 
+            tip_ui_language: 'Changer la langue de l\'interface',
+            tip_data_language: 'Changer la langue des donnees de profil',
             tip_upload_photo: 'Telecharger une photo de profil',
             tip_reg_name: 'Votre nom complet', tip_reg_username: 'Un nom d\'utilisateur unique pour votre URL',
             tip_reg_email: 'Votre adresse e-mail pour la connexion', tip_reg_password: 'Choisissez un mot de passe securise',
@@ -199,7 +205,7 @@
         },
         es: {
             viewer: 'Visor', editor: 'Editor', teams: 'Equipos', register: 'Registro',
-            login: 'INICIAR SESION', logout: 'CERRAR SESION', language: 'IDIOMA',
+            login: 'INICIAR SESION', logout: 'CERRAR SESION', language: 'IDIOMA', data_language: 'IDIOMA DE DATOS',
             logged_in_as: 'Conectado como:',
             identity_viewer: 'DECENTID VIEWER', username: 'USUARIO', context: 'CONTEXTO',
             view_profile: 'VER PERFIL', profile_data: 'DATOS DEL PERFIL',
@@ -227,7 +233,7 @@
             display_name: 'Nombre mostrado', bio: 'Biografia', job_title: 'Cargo',
             company: 'Empresa', location: 'Ubicacion', website: 'Sitio web',
             phone: 'Telefono', avatar: 'Avatar', nickname: 'Apodo', profile_photo: 'Foto de perfil',
-            upload_photo: 'SUBIR', photo_uploaded: 'Foto subida. Haga clic en GUARDAR CAMBIOS para aplicar.',
+            upload_photo: 'GUARDAR FOTO', choose_image: 'ELEGIR IMAGEN', photo_uploaded: 'Foto subida. Haga clic en GUARDAR CAMBIOS para aplicar.',
             tip_nav_viewer: 'Ver perfiles de identidad', tip_nav_editor: 'Editar atributos de tu perfil',
             tip_nav_teams: 'Gestionar equipos', tip_nav_register: 'Crear una cuenta nueva',
             tip_username_select: 'Elegir un usuario para ver su perfil', tip_context_select: 'Elegir el contexto de identidad',
@@ -247,6 +253,8 @@
             tip_attr_name: 'Un nombre legible para el atributo', tip_attr_key: 'Identificador unico (generado automaticamente)',
             tip_attr_type: 'El tipo de datos para este atributo', tip_create_attr: 'Crear un nuevo atributo personalizado',
 
+            tip_ui_language: 'Cambiar el idioma de la interfaz',
+            tip_data_language: 'Cambiar el idioma de los datos del perfil',
             tip_upload_photo: 'Subir una foto de perfil',
             tip_reg_name: 'Su nombre completo', tip_reg_username: 'Un nombre de usuario unico para su URL',
             tip_reg_email: 'Su correo electronico para iniciar sesion', tip_reg_password: 'Elija una contrasena segura',
@@ -261,7 +269,7 @@
         },
         de: {
             viewer: 'Betrachter', editor: 'Editor', teams: 'Teams', register: 'Registrierung',
-            login: 'ANMELDEN', logout: 'ABMELDEN', language: 'SPRACHE',
+            login: 'ANMELDEN', logout: 'ABMELDEN', language: 'SPRACHE', data_language: 'DATENSPRACHE',
             logged_in_as: 'Angemeldet als:',
             identity_viewer: 'DECENTID VIEWER', username: 'BENUTZERNAME', context: 'KONTEXT',
             view_profile: 'PROFIL ANZEIGEN', profile_data: 'PROFILDATEN',
@@ -289,7 +297,7 @@
             display_name: 'Anzeigename', bio: 'Biografie', job_title: 'Berufsbezeichnung',
             company: 'Unternehmen', location: 'Standort', website: 'Webseite',
             phone: 'Telefon', avatar: 'Avatar', nickname: 'Spitzname', profile_photo: 'Profilbild',
-            upload_photo: 'HOCHLADEN', photo_uploaded: 'Bild hochgeladen. Klicken Sie AENDERUNGEN SPEICHERN.',
+            upload_photo: 'FOTO SPEICHERN', choose_image: 'BILD WAEHLEN', photo_uploaded: 'Bild hochgeladen. Klicken Sie AENDERUNGEN SPEICHERN.',
             tip_nav_viewer: 'Identitaetsprofile anzeigen', tip_nav_editor: 'Profilattribute bearbeiten',
             tip_nav_teams: 'Teammitgliedschaften verwalten', tip_nav_register: 'Neues Konto erstellen',
             tip_username_select: 'Benutzer zum Anzeigen waehlen', tip_context_select: 'Identitaetskontext waehlen',
@@ -309,6 +317,8 @@
             tip_attr_name: 'Ein lesbarer Name fuer das Attribut', tip_attr_key: 'Eindeutige Kennung (automatisch generiert)',
             tip_attr_type: 'Der Datentyp fuer dieses Attribut', tip_create_attr: 'Neues benutzerdefiniertes Attribut erstellen',
 
+            tip_ui_language: 'Sprache der Benutzeroberflaeche aendern',
+            tip_data_language: 'Sprache der Profildaten aendern',
             tip_upload_photo: 'Profilbild hochladen',
             tip_reg_name: 'Ihr vollstaendiger Name', tip_reg_username: 'Ein eindeutiger Benutzername fuer Ihre URL',
             tip_reg_email: 'Ihre E-Mail-Adresse zum Anmelden', tip_reg_password: 'Waehlen Sie ein sicheres Passwort',
@@ -323,7 +333,7 @@
         },
         zh: {
             viewer: '查看器', editor: '编辑器', teams: '团队', register: '注册',
-            login: '登录', logout: '登出', language: '语言',
+            login: '登录', logout: '登出', language: '语言', data_language: '数据语言',
             logged_in_as: '已登录：',
             identity_viewer: 'DECENTID VIEWER', username: '用户名', context: '上下文',
             view_profile: '查看资料', profile_data: '资料数据',
@@ -351,7 +361,7 @@
             display_name: '显示名称', bio: '简介', job_title: '职位',
             company: '公司', location: '位置', website: '网站',
             phone: '电话', avatar: '头像', nickname: '昵称', profile_photo: '头像照片',
-            upload_photo: '上传', photo_uploaded: '照片已上传。点击保存更改以应用。',
+            upload_photo: '保存照片', choose_image: '选择图片', photo_uploaded: '照片已上传。点击保存更改以应用。',
             tip_nav_viewer: '查看用户身份资料', tip_nav_editor: '编辑您的资料属性',
             tip_nav_teams: '管理团队成员', tip_nav_register: '创建新账户',
             tip_username_select: '选择要查看的用户', tip_context_select: '选择要显示的身份上下文',
@@ -371,6 +381,8 @@
             tip_attr_name: '属性的可读名称', tip_attr_key: '唯一标识符（自动生成）',
             tip_attr_type: '此属性的数据类型', tip_create_attr: '创建新的自定义属性',
 
+            tip_ui_language: '更改网站界面语言',
+            tip_data_language: '更改个人资料数据语言',
             tip_upload_photo: '上传头像照片',
             tip_reg_name: '您的全名', tip_reg_username: '您的资料 URL 的唯一用户名',
             tip_reg_email: '用于登录的电子邮件地址', tip_reg_password: '选择一个安全的密码',
@@ -385,7 +397,7 @@
         },
         ja: {
             viewer: 'ビューア', editor: 'エディタ', teams: 'チーム', register: '登録',
-            login: 'ログイン', logout: 'ログアウト', language: '言語',
+            login: 'ログイン', logout: 'ログアウト', language: '言語', data_language: 'データ言語',
             logged_in_as: 'ログイン中：',
             identity_viewer: 'DECENTID VIEWER', username: 'ユーザー名', context: 'コンテキスト',
             view_profile: 'プロフィール表示', profile_data: 'プロフィールデータ',
@@ -413,7 +425,7 @@
             display_name: '表示名', bio: '自己紹介', job_title: '役職',
             company: '会社', location: '所在地', website: 'ウェブサイト',
             phone: '電話', avatar: 'アバター', nickname: 'ニックネーム', profile_photo: 'プロフィール写真',
-            upload_photo: 'アップロード', photo_uploaded: '写真がアップロードされました。変更を保存をクリックして適用してください。',
+            upload_photo: '写真を保存', choose_image: '画像を選択', photo_uploaded: '写真がアップロードされました。変更を保存をクリックして適用してください。',
             tip_nav_viewer: 'ユーザーIDプロフィールを表示', tip_nav_editor: 'プロフィール属性を編集',
             tip_nav_teams: 'チームメンバーシップを管理', tip_nav_register: '新しいアカウントを作成',
             tip_username_select: '表示するユーザーを選択', tip_context_select: '表示するIDコンテキストを選択',
@@ -433,6 +445,8 @@
             tip_attr_name: '属性の分かりやすい名前', tip_attr_key: '一意の識別子（自動生成）',
             tip_attr_type: 'この属性のデータタイプ', tip_create_attr: '新しいカスタム属性を作成',
 
+            tip_ui_language: 'サイトのインターフェース言語を変更',
+            tip_data_language: 'プロフィールデータの言語を変更',
             tip_upload_photo: 'プロフィール写真をアップロード',
             tip_reg_name: 'フルネーム', tip_reg_username: 'プロフィールURL用の一意なユーザー名',
             tip_reg_email: 'ログイン用メールアドレス', tip_reg_password: '安全なパスワードを選択',
@@ -450,14 +464,18 @@
     // RTL languages
     const rtlLocales = ['ar'];
 
+    function getUiLocale() {
+        return document.getElementById('ui-locale-select')?.value || localStorage.getItem('ui_locale') || 'en';
+    }
+
     function t(key, locale) {
-        locale = locale || document.getElementById('locale-select')?.value || 'en';
+        locale = locale || getUiLocale();
         return (i18n[locale] && i18n[locale][key]) || i18n.en[key] || key;
     }
 
     function tKey(attrKey, locale) {
         // Translate a profile attribute key (e.g. display_name -> "الاسم المعروض")
-        locale = locale || document.getElementById('locale-select')?.value || 'en';
+        locale = locale || getUiLocale();
         return (i18n[locale] && i18n[locale][attrKey]) || (i18n.en[attrKey]) || attrKey;
     }
 
@@ -468,11 +486,35 @@
     }
 
     function translateTooltips(locale) {
-        locale = locale || (document.getElementById('locale-select') ? document.getElementById('locale-select').value : 'en');
+        locale = locale || (document.getElementById('ui-locale-select') ? document.getElementById('ui-locale-select').value : 'en');
         document.querySelectorAll('[data-tooltip]').forEach(el => {
             const key = el.getAttribute('data-tooltip');
             const text = t(key, locale);
             el.setAttribute('data-tooltip-text', text !== key ? text : '');
         });
+    }
+
+    // Global UI language: persist to localStorage and translate page on change
+    function initGlobalUiLanguage() {
+        const uiSelect = document.getElementById('ui-locale-select');
+        if (!uiSelect) return;
+
+        const saved = localStorage.getItem('ui_locale') || 'en';
+        uiSelect.value = saved;
+        translatePage(saved);
+
+        uiSelect.addEventListener('change', (e) => {
+            const locale = e.target.value;
+            localStorage.setItem('ui_locale', locale);
+            translatePage(locale);
+        });
+    }
+
+    function translatePage(locale) {
+        applyDirection(locale);
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            el.textContent = t(el.dataset.i18n, locale);
+        });
+        translateTooltips(locale);
     }
 </script>

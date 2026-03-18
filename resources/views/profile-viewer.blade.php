@@ -9,11 +9,20 @@
 </head>
 <body class="bg-white min-h-screen py-10 px-4">
     <div class="max-w-2xl mx-auto border-4 border-black">
-        <nav class="bg-gray-100 border-b-4 border-black p-3 flex gap-4 font-mono text-sm uppercase">
+        <nav class="bg-gray-100 border-b-4 border-black p-3 flex items-center gap-4 font-mono text-sm uppercase">
             <a href="/" class="font-bold hover:underline" data-i18n="viewer" data-tooltip="tip_nav_viewer" data-tooltip-pos="bottom">Viewer</a>
             <a href="/editor" class="font-bold hover:underline" data-i18n="editor" data-tooltip="tip_nav_editor" data-tooltip-pos="bottom">Editor</a>
             <a href="/teams" class="font-bold hover:underline" data-i18n="teams" data-tooltip="tip_nav_teams" data-tooltip-pos="bottom">Teams</a>
             <a href="/register" class="font-bold hover:underline" data-i18n="register" data-tooltip="tip_nav_register" data-tooltip-pos="bottom">Register</a>
+            <select id="ui-locale-select" class="ml-auto border-[2px] border-black px-2 py-1 font-mono text-xs bg-white cursor-pointer" data-tooltip="tip_ui_language" data-tooltip-pos="bottom">
+                <option value="en">EN</option>
+                <option value="ar">AR</option>
+                <option value="fr">FR</option>
+                <option value="es">ES</option>
+                <option value="de">DE</option>
+                <option value="zh">ZH</option>
+                <option value="ja">JA</option>
+            </select>
         </nav>
         <!-- Header -->
         <h1 class="bg-black text-white p-4 text-xl font-bold uppercase font-mono" data-i18n="identity_viewer">
@@ -39,8 +48,8 @@
                 </select>
             </div>
             <div>
-                <label class="block font-mono font-bold uppercase text-sm mb-2" data-i18n="language">LANGUAGE</label>
-                <select id="locale-select" class="w-full border-[3px] border-black p-3 font-mono text-base focus:outline-none rounded-none bg-white appearance-none cursor-pointer" data-tooltip="tip_locale_select">
+                <label class="block font-mono font-bold uppercase text-sm mb-2" data-i18n="data_language">DATA LANGUAGE</label>
+                <select id="data-locale-select" class="w-full border-[3px] border-black p-3 font-mono text-base focus:outline-none rounded-none bg-white appearance-none cursor-pointer" data-tooltip="tip_data_language">
                     <option value="en">English (en)</option>
                     <option value="ar">Arabic (ar)</option>
                     <option value="fr">French (fr)</option>
@@ -438,7 +447,7 @@
         async function viewProfile() {
             const username = usernameSelect.value;
             const context = contextSelect.value;
-            const locale = document.getElementById('locale-select').value;
+            const locale = document.getElementById('data-locale-select').value;
 
             hideError();
             profileSection.classList.add('hidden');
@@ -592,7 +601,7 @@
             document.getElementById('xml-output').textContent = rawFormats.xml;
 
             // Show visibility notice based on auth state
-            const noticeLocale = document.getElementById('locale-select').value;
+            const noticeLocale = document.getElementById('data-locale-select').value;
             if (!authToken) {
                 visibilityNotice.textContent = t('visibility_hidden', noticeLocale);
                 visibilityNotice.classList.remove('hidden');
@@ -630,7 +639,7 @@
             // Fields to skip (metadata) for display
             const skipFields = ['@context', '@type', '@id', 'context', '_labels'];
 
-            const locale = document.getElementById('locale-select').value;
+            const locale = document.getElementById('data-locale-select').value;
             for (const [key, fieldData] of Object.entries(profile)) {
                 if (skipFields.includes(key)) continue;
 
@@ -671,7 +680,7 @@
                 visibilityMap[key] = visibility;
             }
 
-            const simpleLocale = document.getElementById('locale-select').value;
+            const simpleLocale = document.getElementById('data-locale-select').value;
             for (const [key, value] of Object.entries(simpleProfile)) {
                 const row = document.createElement('div');
                 const visibility = visibilityMap[key] || 'public';
@@ -893,21 +902,8 @@
             if (e.key === 'Enter') login();
         });
 
-        // Translate all data-i18n elements
-        function translatePage(locale) {
-            applyDirection(locale);
-            document.querySelectorAll('[data-i18n]').forEach(el => {
-                el.textContent = t(el.dataset.i18n, locale);
-            });
-            translateTooltips(locale);
-        }
-
-        // Locale change handler
-        document.getElementById('locale-select').addEventListener('change', (e) => {
-            translatePage(e.target.value);
-        });
-
         // Start
+        initGlobalUiLanguage();
         init();
     </script>
     @endverbatim

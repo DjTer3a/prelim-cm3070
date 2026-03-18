@@ -9,11 +9,20 @@
 </head>
 <body class="bg-white min-h-screen py-10 px-4">
     <div class="max-w-2xl mx-auto border-4 border-black">
-        <nav class="bg-gray-100 border-b-4 border-black p-3 flex gap-4 font-mono text-sm uppercase">
-            <a href="/" class="font-bold hover:underline" data-tooltip="tip_nav_viewer" data-tooltip-pos="bottom">Viewer</a>
-            <a href="/editor" class="font-bold hover:underline" data-tooltip="tip_nav_editor" data-tooltip-pos="bottom">Editor</a>
-            <a href="/teams" class="font-bold hover:underline" data-tooltip="tip_nav_teams" data-tooltip-pos="bottom">Teams</a>
-            <a href="/register" class="font-bold hover:underline" data-tooltip="tip_nav_register" data-tooltip-pos="bottom">Register</a>
+        <nav class="bg-gray-100 border-b-4 border-black p-3 flex items-center gap-4 font-mono text-sm uppercase">
+            <a href="/" class="font-bold hover:underline" data-i18n="viewer" data-tooltip="tip_nav_viewer" data-tooltip-pos="bottom">Viewer</a>
+            <a href="/editor" class="font-bold hover:underline" data-i18n="editor" data-tooltip="tip_nav_editor" data-tooltip-pos="bottom">Editor</a>
+            <a href="/teams" class="font-bold hover:underline" data-i18n="teams" data-tooltip="tip_nav_teams" data-tooltip-pos="bottom">Teams</a>
+            <a href="/register" class="font-bold hover:underline" data-i18n="register" data-tooltip="tip_nav_register" data-tooltip-pos="bottom">Register</a>
+            <select id="ui-locale-select" class="ml-auto border-[2px] border-black px-2 py-1 font-mono text-xs bg-white cursor-pointer" data-tooltip="tip_ui_language" data-tooltip-pos="bottom">
+                <option value="en">EN</option>
+                <option value="ar">AR</option>
+                <option value="fr">FR</option>
+                <option value="es">ES</option>
+                <option value="de">DE</option>
+                <option value="zh">ZH</option>
+                <option value="ja">JA</option>
+            </select>
         </nav>
 
         <!-- Header -->
@@ -221,6 +230,7 @@
         });
 
         // Start
+        initGlobalUiLanguage();
         init();
     </script>
     @endverbatim
